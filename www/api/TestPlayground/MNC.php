@@ -40,6 +40,13 @@ class MNC {
     }
 
     public static function createMNCInstance($name, $mnc_version) {
+        if (empty($name)) {
+            return array(
+                'status' => 'error',
+                'message' => 'you must specify an instance name'
+            );
+        }
+
         //validate the requested version
         if (empty($mnc_version)) {
             return array(
@@ -160,8 +167,24 @@ EOT
 
     public static function startMNC($box_id) {
         $box_id = intval($box_id);
-        $result = shell_exec('sudo -u muxlab VBoxManage startvm ' . self::$box_prefix . $box_id . ' --type headless');
-        DB::query('UPDATE mnc SET status = "started" WHERE id = ?:[id,i] LIMIT 1"', array('id' => $box_id));
+
+        $is_already_started = DB::query('SELECT status FROM mnc WHERE id = ?:[id,i]', array('id' => $box_id));
+
+        if (empty($is_already_started[0]['status']) || !in_array($is_already_started[0]['status'], array('ready', 'started'))) {
+
+            $result = shell_exec('sudo -u muxlab VBoxManage startvm ' . self::$box_prefix . $box_id . ' --type headless');
+            DB::query('UPDATE mnc SET status = "started" WHERE id = ?:[id,i] LIMIT 1"', array('id' => $box_id));
+
+        }
+
+        return true;
+    }
+
+    public static function stopMNC($box_id) {
+        $box_id = intval($box_id);
+
+        $result = shell_exec('sudo -u muxlab VBoxManage controlvm ' . self::$box_prefix . $box_id . ' poweroff');
+        DB::query('UPDATE mnc SET status = "stopped" WHERE id = ?:[id,i] LIMIT 1"', array('id' => $box_id));
 
         return true;
     }
