@@ -1,5 +1,6 @@
 {
     "require": {
-        "slim/slim": "^3.11"
+        "slim/slim": "^3.11",
+        "phpseclib/phpseclib": "^2.0"
     }
 }

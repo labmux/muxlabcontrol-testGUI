@@ -3,7 +3,8 @@
 
 session_start();
 
-require '../vendor/autoload.php';
+require '../../vendor/autoload.php';
+require 'utlis.php';
 require 'config.php';
 
 spl_autoload_register(function ($classname) {
