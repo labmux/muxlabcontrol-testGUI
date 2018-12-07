@@ -19,6 +19,8 @@ class MNC {
     }
 
     public static function getMNCs() {
+        //TODO delete boxes that are 36 hours old, to prevent misuse of this platform
+
         $boxes = DB::query('SELECT * FROM mnc', array());
         return (!empty($boxes) ? $boxes : array());
     }
@@ -195,6 +197,18 @@ iface lo inet loopback
         $result = shell_exec('sudo -u muxlab VBoxManage controlvm ' . self::$box_prefix . $box_id . ' poweroff');
         $result = shell_exec('sudo -u muxlab VBoxManage unregistervm ' . self::$box_prefix . $box_id . ' --delete');
         DB::query('DELETE FROM mnc WHERE id = ?:[id,i] LIMIT 1"', array('id' => $box_id));
+
+        return true;
+    }
+
+    public static function isValidMNCVersion($mnc_version) {
+        $availableVersions = self::getAvailableVersions();
+        if (strpos($mnc_version, 'v') !== 0) {//make sure there's a "v" before the version number
+            $mnc_version = 'v' . $mnc_version;
+        }
+        if (!in_array($mnc_version, $availableVersions)) {
+            return false;
+        }
 
         return true;
     }
