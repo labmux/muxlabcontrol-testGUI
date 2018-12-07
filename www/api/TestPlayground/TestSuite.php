@@ -92,7 +92,7 @@ class TestSuite {
         if (!emptynz($test_suite_id)) {
             foreach ($mnc_versions as $mnc_version) {
                 foreach ($app_versions as $app_version) {
-                    $test_run_id = DB::query('INSERT INTO test_suite_run SET test_suite_id = ?:[test_suite_id,i], mnc_identifier = ?:[mnc_id,s], mnc_user_defined = ?:[mnc_user_defined,b], app_version = ?:[app_version,s], status = "started"', array(
+                    $test_run_id = DB::query('INSERT INTO test_suite_run SET test_suite_id = ?:[test_suite_id,i], mnc_identifier = ?:[mnc_id,s], mnc_user_defined = ?:[mnc_user_defined,b], app_version = ?:[app_version,s], status = "pending"', array(
                         'test_suite_id' => $test_suite_id,
                         'mnc_id' => $mnc_version['identifier'],
                         'mnc_user_defined' => (!empty($mnc_version['user_defined']) ? true : false),
