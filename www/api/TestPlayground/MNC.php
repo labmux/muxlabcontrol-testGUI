@@ -128,9 +128,10 @@ iface eth0 inet static
     
 auto lo
 iface lo inet loopback
-EOT
 ");
 
+        $ssh->exec('sudo ifdown eth0 && sudo ifup eth0');
+        @$ssh->disconnect();
     }
 
     /**
