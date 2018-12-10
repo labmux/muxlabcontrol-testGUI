@@ -1,4 +1,5 @@
 use testplayground;-- MySQL dump 10.13  Distrib 5.7.9, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.9, for Win64 (x86_64)
 --
 -- Host: localhost    Database: testplayground
 -- ------------------------------------------------------
@@ -80,7 +81,9 @@ CREATE TABLE `test_suite_run` (
   `app_version` varchar(45) DEFAULT NULL,
   `status` varchar(45) DEFAULT NULL,
   `date_created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
+  `app_server_port` int(4) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `app_server_port_UNIQUE` (`app_server_port`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -93,4 +96,4 @@ CREATE TABLE `test_suite_run` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-12-07 12:10:44
+-- Dump completed on 2018-12-10 11:18:34

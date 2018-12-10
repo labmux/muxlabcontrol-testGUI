@@ -93,7 +93,7 @@ class TestSuite {
         if (!emptynz($test_suite_id)) {
 
             //get list of ports used already for the app server (ionic serve)
-            $existing_runs = DB::query('SELECT * FROM test_suite_run', array());
+            $existing_runs = DB::query('SELECT * FROM test_suite_run WHERE status = "in_progress"', array());
             $ports_busy = array();
             foreach ($existing_runs as $existing_run) {
                 if (!emptynz($existing_run['app_server_port'])) {
@@ -104,7 +104,11 @@ class TestSuite {
             foreach ($mnc_versions as $mnc_version) {
                 foreach ($app_versions as $app_version) {
                     //choose a port to run the app server on
-                    $app_server_port = max($ports_busy) + 1;
+                    $app_server_port = 8100;
+                    if (!empty($ports_busy)) {
+                        $app_server_port = max($ports_busy) + 1;
+                    }
+
                     $ports_busy[] = $app_server_port;
 
                     //register in DB
@@ -131,5 +135,13 @@ class TestSuite {
     }
 
 
+    public static function deleteTestSuite($test_suite_id) {
+        //TODO implement
+        /*
+         * delete rows
+         * delete directories, incl results and incl the update file supplied
+         * VMS should already be deleted by the runner script
+         */
+    }
 
 }

@@ -25,6 +25,13 @@ class MNC {
         return (!empty($boxes) ? $boxes : array());
     }
 
+    public static function getMNC($id) {
+        $box = DB::query('SELECT * FROM mnc WHERE id = ?:[id,i]', array(
+            'id' => $id
+        ));
+        return (!empty($box[0]) ? $box[0] : array());
+    }
+
     public static function getAvailableVersions() {
         $availableVersions = [];
         $raw_versions = `sudo -u muxlab VBoxManage snapshot primary list --machinereadable`;
@@ -41,7 +48,7 @@ class MNC {
         return $availableVersions;
     }
 
-    public static function createMNCInstance($name, $mnc_version) {
+    public static function createMNCInstance($name, $mnc_version, $system_initiated) {
         if (empty($name)) {
             return array(
                 'status' => 'error',
@@ -75,8 +82,9 @@ class MNC {
         self::$is_instantiating = true;//lock the insantiating mechanism, to prevent > 1 VM insantiating at a time.
 
         //register the new box info to the DB
-        $vbox_id = DB::query('INSERT INTO mnc SET name = ?:[name,s], status = "uninstantiated"', array(
-            'name' => $name
+        $vbox_id = DB::query('INSERT INTO mnc SET name = ?:[name,s], status = "uninstantiated", system_initiated = ?:[system_initiated,b]', array(
+            'name' => $name,
+            'system_initiated' => $system_initiated
         ), array('return_insert_id' => true));
 
         //make sure the insert happened ok
@@ -108,6 +116,7 @@ class MNC {
         self::setBoxIP('192.168.168.50', $box_new_ip);
         DB::query('UPDATE mnc SET status = "ready" WHERE id = ?:[id,i]"', array('id' => $vbox_id));
 
+        //TODO set the is_initiating variable in the DB instead of here since diff processes will try to instantiate
         self::$is_instantiating = false;
         return array(
             'status' => 'success',
