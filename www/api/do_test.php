@@ -64,15 +64,27 @@ shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && gulp templateca
 shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && gulp bundlejs');
 shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && ionic serve --port=' . $test_run_data['app_server_port']);
 
-//TODO ELIRAN CODE HERE for protractor / selenium etc
-shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && ELIRAN');//Eliran place your commands all the way at the end of the string after the "&&"
+//TODO @ELIRAN CODE HERE for protractor / selenium etc
+shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && ELIRAN');//Eliran place your commands all the way at the end of the string after the second "&&"
 shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && STUFF');
 shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && GOES');
 shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && HERE');
 
-//TODO ELIRAN if you can save the results of the protractor run to a file under $app_path/results_{test_suite_ID}_{test_run_id}_{mnc_version}_{app_version}.txt
-//TODO ELIRAN and once that's done, scan each of those files for any failures in protractor (I guess if the word FAILED is there or something) and then produce a file called status.txt and enter "failed" or "success" in it
+$test_run_result = 'success';
+//TODO @ELIRAN if you can save the results of the protractor run to a file under $app_path/results_{test_suite_ID}_{test_run_id}_{mnc_version}_{app_version}.txt
+//TODO @ELIRAN and once that's done, scan each of those files for any failures in protractor (I guess if the word FAILED is there or something) and then assign it to the variable $test_run_result (enter "failed" or "success" in it)
 
-\TestPlayground\DB::query('UPDATE test_suite_run SET status = "done" WHERE id = ?:[id,i]', array(
-    'id' => $data['test_run_id']
+\TestPlayground\DB::query('UPDATE test_suite_run SET status = ?:[status,s] WHERE id = ?:[id,i]', array(
+    'id' => $data['test_run_id'],
+    'status' => $test_run_result
 ));
+
+//check if this was the last run and if so mark the whole suite as compelte
+$all_test_runs = \TestPlayground\DB::query('SELECT * FROM test_suite_run WHERE status = "in_progress" AND test_suite_id = ?:[test_suite_id,i]', array(
+    'test_suite_id' => $test_run_data['test_suite_id']
+));
+if (sizeof($all_test_runs) === 1 && !emptynz($all_test_runs[0]['id']) && intval($all_test_runs[0]['id']) === intval($data['test_run_id'])) {//only 1 test run in progress and it's this one!
+    \TestPlayground\DB::query('UPDATE test_suite SET status = "done" WHERE id = ?:[id,i]', array(
+        'id' => $test_run_data['test_suite_id']
+    ));
+}
