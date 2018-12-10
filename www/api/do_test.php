@@ -50,25 +50,25 @@ if (!is_dir($app_path)) {
     shell_exec('sudo -u muxlab mkdir ' . $app_path);
 }
 
-shell_exec('sudo -u muxlab cd ' . $app_path . ' && git clone http://10.0.1.144:8080/git/a.abitbol/muxcontrol.git');
-shell_exec('sudo -u muxlab cd ' . $app_path . ' && git checkout tags/' . $test_run_data['app_version']);
+shell_exec('sudo -u muxlab true && cd ' . $app_path . ' && git clone http://10.0.1.144:8080/git/a.abitbol/muxcontrol.git');
+shell_exec('sudo -u muxlab true && cd ' . $app_path . ' && git checkout tags/' . $test_run_data['app_version']);
 $appserver_path .= '/muxcontrol';
-shell_exec('sudo -u muxlab cd ' . $appserver_path . ' && apv init');//the app doesn't use semver, which prevents npm install from working... so change it to semver here [for some reason this wasn't necessary during dev...]
-shell_exec('sudo -u muxlab cd ' . $appserver_path . ' && apv set-version '. str_replace('v', '', $test_run_data['app_version']) . '.0');
-shell_exec('sudo -u muxlab cd ' . $appserver_path . ' && npm install');
-shell_exec('sudo -u muxlab cd ' . $appserver_path . ' && bower install');
-shell_exec('sudo -u muxlab cd ' . $appserver_path . ' && ionic setup sass');
-shell_exec('sudo -u muxlab cd ' . $appserver_path . ' && npm rebuild node-sass');
-shell_exec('sudo -u muxlab cd ' . $appserver_path . ' && gulp sass');
-shell_exec('sudo -u muxlab cd ' . $appserver_path . ' && gulp templatecache');
-shell_exec('sudo -u muxlab cd ' . $appserver_path . ' && gulp bundlejs');
-shell_exec('sudo -u muxlab cd ' . $appserver_path . ' && ionic serve --port=' . $test_run_data['app_server_port']);
+shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && apv init');//the app doesn't use semver, which prevents npm install from working... so change it to semver here [for some reason this wasn't necessary during dev...]
+shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && apv set-version '. str_replace('v', '', $test_run_data['app_version']) . '.0');
+shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && npm install');
+shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && bower install');
+shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && ionic setup sass');
+shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && npm rebuild node-sass');
+shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && gulp sass');
+shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && gulp templatecache');
+shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && gulp bundlejs');
+shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && ionic serve --port=' . $test_run_data['app_server_port']);
 
 //TODO ELIRAN CODE HERE for protractor / selenium etc
-shell_exec('sudo -u muxlab cd ' . $appserver_path . ' && ELIRAN');//Eliran place your commands all the way at the end of the string after the "&&"
-shell_exec('sudo -u muxlab cd ' . $appserver_path . ' && STUFF');
-shell_exec('sudo -u muxlab cd ' . $appserver_path . ' && GOES');
-shell_exec('sudo -u muxlab cd ' . $appserver_path . ' && HERE');
+shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && ELIRAN');//Eliran place your commands all the way at the end of the string after the "&&"
+shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && STUFF');
+shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && GOES');
+shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && HERE');
 
 //TODO ELIRAN if you can save the results of the protractor run to a file under $app_path/results_{test_suite_ID}_{test_run_id}_{mnc_version}_{app_version}.txt
 //TODO ELIRAN and once that's done, scan each of those files for any failures in protractor (I guess if the word FAILED is there or something) and then produce a file called status.txt and enter "failed" or "success" in it

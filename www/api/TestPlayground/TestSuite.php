@@ -15,9 +15,10 @@ class TestSuite {
 
     /**
      * @param $name
-     * @param $mnc_versions [{identifier: 'v1.1', user_defined: bool}, ...]
-     * @param $app_versions ['v1', 'v3', 'v5']
+     * @param $mnc_versions [{identifier: 'v1.5.7f', user_defined: bool}, ...] Where user-defined means that the identifier refers to an existing VM created by user
+     * @param $app_versions ['v1.0', 'v3.0', 'v5.4']
      * @return array
+     * @throws \Exception
      */
     public static function createTestSuite($name, $mnc_versions, $app_versions) {
 

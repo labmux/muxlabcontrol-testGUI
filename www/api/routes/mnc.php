@@ -39,7 +39,7 @@ $app->post('/mnc', function (Request $request, Response $response, $args) {
         $data['name'] = '';
     }
     if (empty($data['mnc_version'])) {
-        $data['name'] = '';
+        $data['mnc_version'] = '';
     }
 
     $result = TestPlayground\MNC::createMNCInstance($data['name'], $data['mnc_version']);
