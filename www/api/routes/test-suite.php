@@ -38,3 +38,21 @@ $app->post('/test-suites', function (Request $request, Response $response, $args
 
     return $response;
 });
+
+$app->delete('/test-suites/{suite_id}', function (Request $request, Response $response, $args) {
+    \TestPlayground\TestPlayground::init();
+
+    if (emptynz($args['suite_id'])) {
+        $args['suite_id'] = '';
+    }
+
+    $result = TestPlayground\TestSuite::deleteTestSuite($args['suite_id']);
+
+    if (!empty($result['status']) && $result['status'] === 'error') {
+        $response = $response->withJson($result, 400);
+    } else {
+        $response = $response->withJson($result, 200);
+    }
+
+    return $response;
+});

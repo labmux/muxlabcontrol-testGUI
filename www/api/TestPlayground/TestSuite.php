@@ -81,7 +81,7 @@ class TestSuite {
         }
 
         $update_file = '';
-        //TODO handle the update file here
+        //TODO handle the update file here AND PLACE IT IN THE TEST SUITE FOLDER so that it gets deleted after
 
         //at this point we have valid data, let's go ahead and create an entry in the DB for this test suite
         $test_suite_id = DB::query('INSERT INTO test_suites SET name = ?:[name,s], mnc_versions = ?:[mnc_verions,s], app_versions = ?:[app_versions,s], update_file = ?:[update_file,s]', array(
@@ -136,12 +136,18 @@ class TestSuite {
 
 
     public static function deleteTestSuite($test_suite_id) {
-        //TODO implement
-        /*
-         * delete rows
-         * delete directories, incl results and incl the update file supplied
-         * VMS should already be deleted by the runner script
-         */
+        $test_suite_id = intval($test_suite_id);
+        if (is_dir('sudo -u muxlab true && rm -rf /var/www/html/www/test-runs/test-suite_' . $test_suite_id)) {
+            shell_exec('sudo -u muxlab true && rm -rf /var/www/html/www/test-runs/test-suite_' . $test_suite_id);//TODO test this
+        }
+        
+        DB::query('DELETE FROM test_suite_run WHERE test_suite_id = ?:[test_suite_id,i]', array(
+            'test_suite_id' => $test_suite_id
+        ));
+
+        DB::query('DELETE FROM test_suite WHERE id = ?:[test_suite_id,i]', array(
+            'test_suite_id' => $test_suite_id
+        ));
     }
 
 }

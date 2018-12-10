@@ -104,7 +104,11 @@ if (!is_dir('/var/www/html/www/test-runs')) {
     shell_exec('sudo -u muxlab mkdir /var/www/html/www/test-runs ');
 }
 
-$test_run_path = '/var/www/html/www/test-runs/test-run_' . $test_run_data['test_suite_id'] . '_' . $data['test_run_id'];
+if (!is_dir('/var/www/html/www/test-runs/test-suite_' . $test_run_data['test_suite_id'])) {
+    shell_exec('sudo -u muxlab mkdir ' . '/var/www/html/www/test-runs/test-suite_' . $test_run_data['test_suite_id']);
+}
+
+$test_run_path = '/var/www/html/www/test-runs/test-suite_' . $test_run_data['test_suite_id'] . '/test-run_' . $data['test_run_id'];
 if (!is_dir($test_run_path)) {
     shell_exec('sudo -u muxlab mkdir ' . $test_run_path);
 }
