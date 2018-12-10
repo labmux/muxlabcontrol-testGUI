@@ -90,14 +90,31 @@ class TestSuite {
 
         //Ok, now let's run these tests! and register each in DB
         if (!emptynz($test_suite_id)) {
+
+            //get list of ports used already for the app server (ionic serve)
+            $existing_runs = DB::query('SELECT * FROM test_suite_run', array());
+            $ports_busy = array();
+            foreach ($existing_runs as $existing_run) {
+                if (!emptynz($existing_run['app_server_port'])) {
+                    $ports_busy[] = intval($existing_run['app_server_port']);
+                }
+            }
+
             foreach ($mnc_versions as $mnc_version) {
                 foreach ($app_versions as $app_version) {
-                    $test_run_id = DB::query('INSERT INTO test_suite_run SET test_suite_id = ?:[test_suite_id,i], mnc_identifier = ?:[mnc_id,s], mnc_user_defined = ?:[mnc_user_defined,b], app_version = ?:[app_version,s], status = "pending"', array(
+                    //choose a port to run the app server on
+                    $app_server_port = max($ports_busy) + 1;
+                    $ports_busy[] = $app_server_port;
+
+                    //register in DB
+                    $test_run_id = DB::query('INSERT INTO test_suite_run SET test_suite_id = ?:[test_suite_id,i], mnc_identifier = ?:[mnc_id,s], mnc_user_defined = ?:[mnc_user_defined,b], app_version = ?:[app_version,s], app_server_port = ?:[app_server_port,i], status = "pending"', array(
                         'test_suite_id' => $test_suite_id,
                         'mnc_id' => $mnc_version['identifier'],
                         'mnc_user_defined' => (!empty($mnc_version['user_defined']) ? true : false),
-                        'app_version' => $app_version
+                        'app_version' => $app_version,
+                        'app_server_port' => $app_server_port
                     ), array('return_insert_id' => true));
+
                     //should spawn a new process for each test, since we don't want to wait here for them to complete before responding to the user
                     exec("sudo -u muxlab nohup php /var/www/html/www/api/do_test.php \"test_run_id={$test_run_id}\" > /dev/null 2>&1 &");
                 }

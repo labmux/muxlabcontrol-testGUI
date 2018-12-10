@@ -35,9 +35,6 @@ $test_run_data = \TestPlayground\DB::query('SELECT test_suite_run.*, test_suite.
     'id' => $data['test_run_id']
 ));
 
-
-//TODO since multiple test can run at the same time, and ionic serve from there! and returngbf the port of server
-
 //create a new MuxLabControl app instance for this test
 if (!is_dir('/var/www/html/www/test-runs')) {
     shell_exec('sudo -u muxlab mkdir /var/www/html/www/test-runs ');
@@ -54,11 +51,28 @@ if (!is_dir($app_path)) {
 }
 
 shell_exec('sudo -u muxlab cd ' . $app_path . ' && git clone http://10.0.1.144:8080/git/a.abitbol/muxcontrol.git');
-$app_path .= '/muxcontrol';
-shell_exec('sudo -u muxlab cd ' . $app_path . ' && npm install');//TODO on test server this isn't working for some reason
-shell_exec('sudo -u muxlab cd ' . $app_path . ' && bower install');
-shell_exec('sudo -u muxlab cd ' . $app_path . ' && ionic setup sass');
-shell_exec('sudo -u muxlab cd ' . $app_path . ' && gulp sass');
-shell_exec('sudo -u muxlab cd ' . $app_path . ' && gulp templatecache');
-shell_exec('sudo -u muxlab cd ' . $app_path . ' && gulp bundlejs');
-shell_exec('sudo -u muxlab cd ' . $app_path . ' && ionic serve');//TODO get the port returned!!
+shell_exec('sudo -u muxlab cd ' . $app_path . ' && git checkout tags/' . $test_run_data['app_version']);
+$appserver_path .= '/muxcontrol';
+shell_exec('sudo -u muxlab cd ' . $appserver_path . ' && apv init');//the app doesn't use semver, which prevents npm install from working... so change it to semver here [for some reason this wasn't necessary during dev...]
+shell_exec('sudo -u muxlab cd ' . $appserver_path . ' && apv set-version '. str_replace('v', '', $test_run_data['app_version']) . '.0');
+shell_exec('sudo -u muxlab cd ' . $appserver_path . ' && npm install');
+shell_exec('sudo -u muxlab cd ' . $appserver_path . ' && bower install');
+shell_exec('sudo -u muxlab cd ' . $appserver_path . ' && ionic setup sass');
+shell_exec('sudo -u muxlab cd ' . $appserver_path . ' && npm rebuild node-sass');
+shell_exec('sudo -u muxlab cd ' . $appserver_path . ' && gulp sass');
+shell_exec('sudo -u muxlab cd ' . $appserver_path . ' && gulp templatecache');
+shell_exec('sudo -u muxlab cd ' . $appserver_path . ' && gulp bundlejs');
+shell_exec('sudo -u muxlab cd ' . $appserver_path . ' && ionic serve --port=' . $test_run_data['app_server_port']);
+
+//TODO ELIRAN CODE HERE for protractor / selenium etc
+shell_exec('sudo -u muxlab cd ' . $appserver_path . ' && ELIRAN');//Eliran place your commands all the way at the end of the string after the "&&"
+shell_exec('sudo -u muxlab cd ' . $appserver_path . ' && STUFF');
+shell_exec('sudo -u muxlab cd ' . $appserver_path . ' && GOES');
+shell_exec('sudo -u muxlab cd ' . $appserver_path . ' && HERE');
+
+//TODO ELIRAN if you can save the results of the protractor run to a file under $app_path/results_{test_suite_ID}_{test_run_id}_{mnc_version}_{app_version}.txt
+//TODO ELIRAN and once that's done, scan each of those files for any failures in protractor (I guess if the word FAILED is there or something) and then produce a file called status.txt and enter "failed" or "success" in it
+
+\TestPlayground\DB::query('UPDATE test_suite_run SET status = "done" WHERE id = ?:[id,i]', array(
+    'id' => $data['test_run_id']
+));
