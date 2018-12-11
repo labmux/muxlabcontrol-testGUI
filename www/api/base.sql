@@ -58,7 +58,7 @@ DROP TABLE IF EXISTS `test_suite`;
 CREATE TABLE `test_suite` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(45) DEFAULT NULL,
-  `update_file` varchar(255) DEFAULT NULL,
+  `update_file` tinyint(1) DEFAULT NULL,
   `timestamp_created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `status` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -96,4 +96,4 @@ CREATE TABLE `test_suite_run` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-12-10 11:18:34
+-- Dump completed on 2018-12-11 12:30:05
