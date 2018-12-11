@@ -36,7 +36,7 @@ $app->post('/test-suites', function (Request $request, Response $response, $args
     $uploadedFiles = $request->getUploadedFiles();
 
     // handle single input with single file upload
-    $uploadedFile = $uploadedFiles['update-file'];
+    $uploadedFile = $uploadedFiles['update_file'];
     if ($uploadedFile->getError() !== UPLOAD_ERR_OK) {
         return $response->withJson(array(
             'status' => 'error',

@@ -9,6 +9,8 @@ class TestSuite {
 
     public static function getTestSuites() {
         $suites = DB::query('SELECT * FROM test_suite', array());
+        //TODO for each suite, check if it's complete and if so check if the zip of results is available for download results_download_link
+        //TODO maybe add stuff like number of test runs completed and other useful info like time elapsed etc (can be determiend on JS)
         return (!empty($suites) ? $suites : array());
     }
 

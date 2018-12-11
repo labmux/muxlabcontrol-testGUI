@@ -134,11 +134,25 @@ $ionic_process_id = shell_exec('sudo -u muxlab true && cd ' . $appserver_path . 
 $ionic_process_id = explode("\n", $ionic_process_id);
 $ionic_process_id = $ionic_process_id[1];
 
+
+
 //TODO @ELIRAN CODE HERE for protractor / selenium etc
+/**
+ * Eliran - here are the variables that are available to you at this point:
+ * $test_run_data['app_version'] this is the app version we are testing now
+ * $test_run_data['mnc_identifier'] this is the version of the mnc we are testing BUT it might be a random string, see the next variable below
+ * $test_run_data['mnc_user_defined'] this means that the user created an MNC and may have changed files on it, so we can't assume it's any specific version of the MNC, so just assume this is the latest MNC version for your tests
+ * $test_run_data['app_server_port'] this is the port that ionic serve is serving on so you can point protractor to http://localhost:PORT
+ *
+ * Note that this server will run multiple tests simultaneously so let me know if selenium is bugging out due to port number being used / different etc. we might generate our own port #s and store them in the DB or something
+ */
 shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && ELIRAN');//Eliran place your commands all the way at the end of the string after the second "&&"
 shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && STUFF');
 shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && GOES');
 shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && HERE');
+
+
+
 
 $test_run_result = 'success';
 //TODO @ELIRAN if you can save the results of the protractor run to a file under $app_path/results_{test_suite_ID}_{test_run_id}_{mnc_version}_{app_version}.txt
@@ -165,4 +179,5 @@ if (sizeof($all_test_runs) === 0) {//test suite has all its child processes fini
     \TestPlayground\DB::query('UPDATE test_suite SET status = "done" WHERE id = ?:[id,i]', array(
         'id' => $test_run_data['test_suite_id']
     ));
+    //TODO since all tests are done, zip all the results into a downloadable file
 }
