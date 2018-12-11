@@ -120,7 +120,7 @@ angular.module('uiBootstrap').factory('TestServerAPIService', ['$q', '$http', fu
 
 angular.module('uiBootstrap').controller('ModalCtrl', ['TestServerAPIService', function (TestServerAPIService) {
     var $ctrl = this;
-    
+
     $ctrl.animationsEnabled = true;
 
     $ctrl.mnc.name;
