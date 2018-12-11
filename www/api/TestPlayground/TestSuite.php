@@ -4,7 +4,6 @@ use \phpseclib\Net\SSH2;
 
 class TestSuite {
 
-
     public function __construct() {
     }
 
@@ -20,7 +19,7 @@ class TestSuite {
      * @return array
      * @throws \Exception
      */
-    public static function createTestSuite($name, $mnc_versions, $app_versions) {
+    public static function createTestSuite($name, $mnc_versions, $app_versions, $uploaded_file) {
 
         if (empty($name)) {
             return array(
@@ -80,17 +79,24 @@ class TestSuite {
             }
         }
 
-        $update_file = '';
-        //TODO handle the update file here AND PLACE IT IN THE TEST SUITE FOLDER so that it gets deleted after
-
         //at this point we have valid data, let's go ahead and create an entry in the DB for this test suite
-        $test_suite_id = DB::query('INSERT INTO test_suites SET name = ?:[name,s], mnc_versions = ?:[mnc_verions,s], app_versions = ?:[app_versions,s], update_file = ?:[update_file,s]', array(
+        $test_suite_id = DB::query('INSERT INTO test_suites SET name = ?:[name,s], mnc_versions = ?:[mnc_verions,s], app_versions = ?:[app_versions,s], update_file = ?:[update_file,b]', array(
             'name' => $name,
-            'update_file' => $update_file
+            'update_file' => (!empty($uploaded_file) ? true : false)
         ), array('return_insert_id' => true));
 
         //Ok, now let's run these tests! and register each in DB
         if (!emptynz($test_suite_id)) {
+
+            //TODO handle the update file here and place it in test suite folder so that it gets deleted after (on user delete)
+            if (!empty($uploaded_file)) {
+                if (!is_dir(PATH_TEST_RUNS . '/test-suite_' . $test_suite_id)) {
+                    shell_exec('sudo -u muxlab mkdir ' . PATH_TEST_RUNS . '/test-suite_' . $test_suite_id);
+                }
+                moveUploadedUpdateFile(PATH_TEST_RUNS . 'test-suite_' . $test_suite_id . '/update-file.zip', $uploaded_file);
+            }
+
+
 
             //get list of ports used already for the app server (ionic serve)
             $existing_runs = DB::query('SELECT * FROM test_suite_run WHERE status = "in_progress"', array());

@@ -1,4 +1,9 @@
 <?php
+use \Psr\Http\Message\ServerRequestInterface as Request;
+use \Psr\Http\Message\ResponseInterface as Response;
+use Slim\Http\UploadedFile;
+
+
 $app->get('/test-suites', function (Request $request, Response $response, $args) {
     \TestPlayground\TestPlayground::init();
 
@@ -28,7 +33,18 @@ $app->post('/test-suites', function (Request $request, Response $response, $args
         $data['app_versions'] = '';
     }
 
-    $result = TestPlayground\TestSuite::createTestSuite($data['name'], $data['mnc_versions'], $data['app_versions']);
+    $uploadedFiles = $request->getUploadedFiles();
+
+    // handle single input with single file upload
+    $uploadedFile = $uploadedFiles['update-file'];
+    if ($uploadedFile->getError() !== UPLOAD_ERR_OK) {
+        return $response->withJson(array(
+            'status' => 'error',
+            'message' => 'invalid update-file upload'
+        ), 400);
+    }
+
+    $result = TestPlayground\TestSuite::createTestSuite($data['name'], $data['mnc_versions'], $data['app_versions'], $uploadedFile);
 
     if (!empty($result['status']) && $result['status'] === 'error') {
         $response = $response->withJson($result, 400);

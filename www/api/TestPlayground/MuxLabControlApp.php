@@ -10,7 +10,7 @@ class MuxLabControlApp {
     }
 
     public static function getAppVersions() {
-        $app_versions = shell_exec('sudo -u muxlab true && cd /var/www/html/www/test-runs/primary/muxcontrol && git tag -l');
+        $app_versions = shell_exec('sudo -u muxlab true && cd /var/www/html/www/test-runs/primary/muxcontrol && git fetch && git tag -l');
         self::$app_versions = explode("\n", $app_versions);
 
         return self::$app_versions;

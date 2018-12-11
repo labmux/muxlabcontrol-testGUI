@@ -4,6 +4,7 @@
 session_start();
 
 require '../../vendor/autoload.php';
+use Slim\Http\UploadedFile;
 require 'utlis.php';
 require 'config.php';
 
@@ -17,6 +18,13 @@ $config['addContentLengthHeader'] = false;
 
 $app = new \Slim\App(["settings" => $config]);
 
+$container = $app->getContainer();
+if (!is_dir(__DIR__ . '/temp-uploads')) {
+    shell_exec('sudo -u muxlab mkdir ' . __DIR__ . '/temp-uploads');
+    shell_exec('sudo -u muxlab chmod -R 777 ' . __DIR__ . '/temp-uploads');
+}
+
+$container['upload_directory'] = __DIR__ . '/temp-uploads';
 
 $app->options('/{routes:.+}', function ($request, $response, $args) {
     return $response;
@@ -38,5 +46,6 @@ $routes = glob("./routes/*.php");
 foreach ($routes as $route) {
     include $route;
 }
+
 
 $app->run();

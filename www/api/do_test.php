@@ -79,7 +79,7 @@ if (!empty($test_run_data['mnc_user_defined'])) {
             'multipart' => [
                 [
                     'name'     => 'zip_file',
-                    'contents' => fopen($test_run_data['update_file'], 'r')
+                    'contents' => fopen(PATH_TEST_RUNS . '/test-suite_' . $test_run_data['test_suite_id'], 'r')
                 ]
             ],
             'headers' => [
