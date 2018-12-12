@@ -9,8 +9,12 @@ class TestSuite {
 
     public static function getTestSuites() {
         $suites = DB::query('SELECT * FROM test_suite', array());
-        //TODO for each suite, check if it's complete and if so check if the zip of results is available for download results_download_link
-        //TODO maybe add stuff like number of test runs completed and other useful info like time elapsed etc (can be determiend on JS)
+        for ($i = 0; $i < sizeof($suites); $i++) {
+            $suites[$i]['test_suite_runs'] = DB::query('SELECT * FROM test_suite_run WHERE test_suite_id = ?:[suite_id,i]', array(
+                'suite_id' => $suites[$i]['id']
+            ));
+        }
+
         return (!empty($suites) ? $suites : array());
     }
 
@@ -40,7 +44,7 @@ class TestSuite {
         if (empty($app_versions)) {
             return array(
                 'status' => 'error',
-                'message' => 'you must specify app verions to to test against TS003'
+                'message' => 'you must specify app versions to to test against TS003'
             );
         }
 
@@ -48,7 +52,7 @@ class TestSuite {
         $existing_boxes = MNC::getMNCs();
         foreach ($mnc_versions as $mnc_version) {
             if (empty($mnc_version['user_defined'])) {
-                if (!MNC::isValidMNCVersion($mnc_version['identifier'])) {
+                if (empty($mnc_version['identifier']) || !MNC::isValidMNCVersion($mnc_version['identifier'])) {
                     return array(
                         'status' => 'error',
                         'message' => 'test suite specified invalid mnc version TS004'
@@ -82,8 +86,10 @@ class TestSuite {
         }
 
         //at this point we have valid data, let's go ahead and create an entry in the DB for this test suite
-        $test_suite_id = DB::query('INSERT INTO test_suites SET name = ?:[name,s], mnc_versions = ?:[mnc_verions,s], app_versions = ?:[app_versions,s], update_file = ?:[update_file,b]', array(
+        $test_suite_id = DB::query('INSERT INTO test_suite SET name = ?:[name,s], mnc_versions = ?:[mnc_versions,s], app_versions = ?:[app_versions,s], update_file = ?:[update_file,b]', array(
             'name' => $name,
+            'mnc_versions' => json_encode($mnc_versions),
+            'app_versions' => json_encode($app_versions),
             'update_file' => (!empty($uploaded_file) ? true : false)
         ), array('return_insert_id' => true));
 
@@ -135,7 +141,7 @@ class TestSuite {
         }
 
         //inform the user that all was initiated and waiting for results
-        DB::query('UPDATE test_suite SET status="in_progress" WHERE id = ?:[id.i]', array('id' => $test_suite_id));
+        DB::query('UPDATE test_suite SET status="in_progress" WHERE id = ?:[id,i]', array('id' => $test_suite_id));
         return array(
             'status' => 'success',
             'message' => 'tests in progress'

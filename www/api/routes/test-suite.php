@@ -33,15 +33,18 @@ $app->post('/test-suites', function (Request $request, Response $response, $args
         $data['app_versions'] = '';
     }
 
+    $uploadedFile = '';
     $uploadedFiles = $request->getUploadedFiles();
 
     // handle single input with single file upload
-    $uploadedFile = $uploadedFiles['update_file'];
-    if ($uploadedFile->getError() !== UPLOAD_ERR_OK) {
-        return $response->withJson(array(
-            'status' => 'error',
-            'message' => 'invalid update-file upload'
-        ), 400);
+    if (!empty($uploadedFiles['update_file'])) {
+        $uploadedFile = $uploadedFiles['update_file'];
+        if ($uploadedFile->getError() !== UPLOAD_ERR_OK) {
+            return $response->withJson(array(
+                'status' => 'error',
+                'message' => 'invalid update-file upload'
+            ), 400);
+        }
     }
 
     $result = TestPlayground\TestSuite::createTestSuite($data['name'], $data['mnc_versions'], $data['app_versions'], $uploadedFile);

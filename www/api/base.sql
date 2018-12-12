@@ -1,4 +1,4 @@
-use testplayground;-- MySQL dump 10.13  Distrib 5.7.9, for Win64 (x86_64)
+use testplayground;
 -- MySQL dump 10.13  Distrib 5.7.9, for Win64 (x86_64)
 --
 -- Host: localhost    Database: testplayground
@@ -43,9 +43,10 @@ CREATE TABLE `mnc` (
   `status` varchar(45) DEFAULT NULL,
   `ip_address` varchar(45) DEFAULT NULL,
   `timestamp_created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `system_initiated` tinyint(1) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name_UNIQUE` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -61,9 +62,11 @@ CREATE TABLE `test_suite` (
   `update_file` tinyint(1) DEFAULT NULL,
   `timestamp_created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `status` varchar(45) DEFAULT NULL,
+  `mnc_versions` longtext NOT NULL,
+  `app_versions` longtext NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name_UNIQUE` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -84,7 +87,7 @@ CREATE TABLE `test_suite_run` (
   `app_server_port` int(4) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `app_server_port_UNIQUE` (`app_server_port`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -96,4 +99,4 @@ CREATE TABLE `test_suite_run` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-12-11 12:30:05
+-- Dump completed on 2018-12-12 14:00:48

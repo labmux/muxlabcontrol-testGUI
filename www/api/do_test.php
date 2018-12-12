@@ -4,13 +4,13 @@
  * it's meant to be called as such php do_test.php "test_run_id=123"
  */
 
-require '../../vendor/autoload.php';
+require __DIR__ . '/../../vendor/autoload.php';
 require 'utlis.php';
 require 'config.php';
 
 spl_autoload_register(function ($classname) {
     $classname = str_replace('\\', '/', $classname);
-    require ("./" . $classname . ".php");
+    require (__DIR__ . "/./" . $classname . ".php");
 });
 
 $config['displayErrorDetails'] = true;
@@ -26,10 +26,11 @@ if (emptynz($data['test_run_id'])) {
     echo 'invalid test run id';
     exit(0);
 }
-
-$test_run_data = \TestPlayground\DB::query('SELECT test_suite_run.*, test_suite.id as `test_suite_id`, test_suite.update_file FROM test_suite_run LEFT JOIN test_suite ON test_suite_run.test_suite_id = test_suite.id WHERE test_suite_run.id = ?:[id,i]', array(
+\TestPlayground\DB::init();
+$test_run_data = \TestPlayground\DB::query('SELECT test_suite_run.*, test_suite.update_file FROM test_suite_run LEFT JOIN test_suite ON test_suite_run.test_suite_id = test_suite.id WHERE test_suite_run.id = ?:[id,i]', array(
 'id' => $data['test_run_id']
 ));
+$test_run_data = reset($test_run_data);
 
 \TestPlayground\DB::query('UPDATE test_suite_run SET status = "in_progress" WHERE id = ?:[id,i]', array(
     'id' => $data['test_run_id']
@@ -46,7 +47,6 @@ if (!empty($test_run_data['mnc_user_defined'])) {
             'id' => $data['test_run_id'],
             'status' => 'invalid'
         ));
-        exit(0);
     }
 } else {
     $mnc_instance = \TestPlayground\MNC::createMNCInstance('System Initiated ' . $test_run_data['test_suite_id'] . '_' . $data['test_run_id'], $test_run_data['mnc_identifier'], true);
@@ -97,8 +97,6 @@ if (!empty($test_run_data['mnc_user_defined'])) {
     //TODO @ELIRAN in the web interface don't let the user specify an update file when it's a user defined MNC
 }
 
-
-
 //create a new MuxLabControl app instance for this test
 if (!is_dir('/var/www/html/www/test-runs')) {
     shell_exec('sudo -u muxlab mkdir /var/www/html/www/test-runs ');
@@ -120,7 +118,7 @@ if (!is_dir($app_path)) {
 
 shell_exec('sudo -u muxlab true && cd ' . $app_path . ' && git clone http://10.0.1.144:8080/git/a.abitbol/muxcontrol.git');
 shell_exec('sudo -u muxlab true && cd ' . $app_path . ' && git checkout tags/' . $test_run_data['app_version']);
-$appserver_path .= '/muxcontrol';
+$appserver_path = $app_path . '/muxcontrol';
 shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && apv init');//the app doesn't use semver, which prevents npm install from working... so change it to semver here [for some reason this wasn't necessary during dev...]
 shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && apv set-version '. str_replace('v', '', $test_run_data['app_version']) . '.0');
 shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && npm install');

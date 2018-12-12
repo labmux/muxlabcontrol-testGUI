@@ -81,7 +81,7 @@ class DB {
         }
 
         global $config;
-        if ($config['debug_sql'] === true) {
+        if (!empty($config['debug_sql']) && $config['debug_sql'] === true) {
             echo '<pre>';
             echo $sql;
             echo '</pre>';

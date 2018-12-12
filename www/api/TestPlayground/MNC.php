@@ -48,7 +48,7 @@ class MNC {
         return $availableVersions;
     }
 
-    public static function createMNCInstance($name, $mnc_version, $system_initiated) {
+    public static function createMNCInstance($name, $mnc_version, $system_initiated = false) {
         if (empty($name)) {
             return array(
                 'status' => 'error',
@@ -82,10 +82,20 @@ class MNC {
         self::$is_instantiating = true;//lock the insantiating mechanism, to prevent > 1 VM insantiating at a time.
 
         //register the new box info to the DB
-        $vbox_id = DB::query('INSERT INTO mnc SET name = ?:[name,s], status = "uninstantiated", system_initiated = ?:[system_initiated,b]', array(
-            'name' => $name,
-            'system_initiated' => $system_initiated
-        ), array('return_insert_id' => true));
+        try {
+            $vbox_id = DB::query('INSERT INTO mnc SET name = ?:[name,s], status = "uninstantiated", system_initiated = ?:[system_initiated,b]', array(
+                'name' => $name,
+                'system_initiated' => $system_initiated
+            ), array('return_insert_id' => true));
+        } catch (\Exception $e) {
+            if (!empty($e->getMessage()) && strpos(strtolower($e->getMessage()), 'duplicate') !== false) {
+                return array(
+                    'status' => 'error',
+                    'message' => 'name exists already'
+                );
+            }
+        }
+
 
         //make sure the insert happened ok
         if (emptynz($vbox_id)) {
@@ -98,7 +108,7 @@ class MNC {
 
         //instantiate the machine:
         $clone = shell_exec('sudo -u muxlab VBoxManage clonevm primary --snapshot ' . $mnc_version . ' --name ' . self::$box_prefix . $vbox_id . ' --register');
-        DB::query('UPDATE mnc SET status = "instantiated" WHERE id = ?:[id,i]"', array('id' => $vbox_id));
+        DB::query('UPDATE mnc SET status = "instantiated" WHERE id = ?:[id,i]', array('id' => $vbox_id));
 
         //now let's boot it and change the default IP to something unique
         self::startMNC($vbox_id);
@@ -114,7 +124,7 @@ class MNC {
 
 
         self::setBoxIP('192.168.168.50', $box_new_ip);
-        DB::query('UPDATE mnc SET status = "ready" WHERE id = ?:[id,i]"', array('id' => $vbox_id));
+        DB::query('UPDATE mnc SET status = "ready", ip_address = ?:[new_ip,s] WHERE id = ?:[id,i]', array('id' => $vbox_id, 'new_ip' => $box_new_ip));
 
         //TODO set the is_initiating variable in the DB instead of here since diff processes will try to instantiate
         self::$is_instantiating = false;
@@ -127,7 +137,7 @@ class MNC {
     }
 
     private static function setBoxIP($current_ip, $new_ip) {
-        $ssh = new SSH2($current_ip);
+        $ssh = new \phpseclib\Net\SSH2($current_ip);
         $ssh->login('root', '111111');
 
         $ssh->exec("sudo cat <<EOT | sudo tee /etc/network/interfaces >&-
@@ -185,7 +195,7 @@ iface lo inet loopback
         if (empty($is_already_started[0]['status']) || !in_array($is_already_started[0]['status'], array('ready', 'started'))) {
 
             $result = shell_exec('sudo -u muxlab VBoxManage startvm ' . self::$box_prefix . $box_id . ' --type headless');
-            DB::query('UPDATE mnc SET status = "started" WHERE id = ?:[id,i] LIMIT 1"', array('id' => $box_id));
+            DB::query('UPDATE mnc SET status = "started" WHERE id = ?:[id,i] LIMIT 1', array('id' => $box_id));
 
         }
 
@@ -196,7 +206,7 @@ iface lo inet loopback
         $box_id = intval($box_id);
 
         $result = shell_exec('sudo -u muxlab VBoxManage controlvm ' . self::$box_prefix . $box_id . ' poweroff');
-        DB::query('UPDATE mnc SET status = "stopped" WHERE id = ?:[id,i] LIMIT 1"', array('id' => $box_id));
+        DB::query('UPDATE mnc SET status = "stopped" WHERE id = ?:[id,i] LIMIT 1', array('id' => $box_id));
 
         return true;
     }
@@ -205,7 +215,7 @@ iface lo inet loopback
         $box_id = intval($box_id);
         $result = shell_exec('sudo -u muxlab VBoxManage controlvm ' . self::$box_prefix . $box_id . ' poweroff');
         $result = shell_exec('sudo -u muxlab VBoxManage unregistervm ' . self::$box_prefix . $box_id . ' --delete');
-        DB::query('DELETE FROM mnc WHERE id = ?:[id,i] LIMIT 1"', array('id' => $box_id));
+        DB::query('DELETE FROM mnc WHERE id = ?:[id,i] LIMIT 1', array('id' => $box_id));
 
         return true;
     }
