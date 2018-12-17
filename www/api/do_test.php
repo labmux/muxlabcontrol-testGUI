@@ -16,7 +16,7 @@ spl_autoload_register(function ($classname) {
 $config['displayErrorDetails'] = true;
 $config['addContentLengthHeader'] = false;
 
-
+chdir('/');
 $data = array();
 if (!empty($argv[1])) {
     parse_str($argv[1], $data);
@@ -26,6 +26,7 @@ if (emptynz($data['test_run_id'])) {
     echo 'invalid test run id';
     exit(0);
 }
+
 \TestPlayground\DB::init();
 $test_run_data = \TestPlayground\DB::query('SELECT test_suite_run.*, test_suite.update_file FROM test_suite_run LEFT JOIN test_suite ON test_suite_run.test_suite_id = test_suite.id WHERE test_suite_run.id = ?:[id,i]', array(
 'id' => $data['test_run_id']
@@ -36,11 +37,10 @@ $test_run_data = reset($test_run_data);
     'id' => $data['test_run_id']
 ));
 
-
-
 //run the MNC virtualbox here
 $mnc_instance = array();
 if (!empty($test_run_data['mnc_user_defined'])) {
+
     $mnc_instance = \TestPlayground\MNC::getMNC($test_run_data['mnc_identifier']);
     if (empty($mnc_instance)) {
         \TestPlayground\DB::query('UPDATE test_suite_run SET status = ?:[status,s] WHERE id = ?:[id,i]', array(
@@ -49,8 +49,10 @@ if (!empty($test_run_data['mnc_user_defined'])) {
         ));
     }
 } else {
+
     $mnc_instance = \TestPlayground\MNC::createMNCInstance('System Initiated ' . $test_run_data['test_suite_id'] . '_' . $data['test_run_id'], $test_run_data['mnc_identifier'], true);
     //run the update file here if applicable
+
     if (!empty($test_run_data['update_file'])) {
 
         //TODO test the auto update sys as well
@@ -115,12 +117,14 @@ $app_path = $test_run_path . '/app';
 if (!is_dir($app_path)) {
     shell_exec('sudo -u muxlab mkdir ' . $app_path);
 }
-
+putenv('PATH=' . getenv('PATH') . ':/home/muxlab/.nvm/versions/node/v6.11.2/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games');
 shell_exec('sudo -u muxlab true && cd ' . $app_path . ' && git clone http://10.0.1.144:8080/git/a.abitbol/muxcontrol.git');
-shell_exec('sudo -u muxlab true && cd ' . $app_path . ' && git checkout tags/' . $test_run_data['app_version']);
 $appserver_path = $app_path . '/muxcontrol';
+shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && git checkout tags/' . $test_run_data['app_version']);
 shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && apv init');//the app doesn't use semver, which prevents npm install from working... so change it to semver here [for some reason this wasn't necessary during dev...]
+
 shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && apv set-version '. str_replace('v', '', $test_run_data['app_version']) . '.0');
+
 shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && npm install');
 shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && bower install');
 shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && ionic setup sass');
@@ -128,6 +132,7 @@ shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && npm rebuild nod
 shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && gulp sass');
 shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && gulp templatecache');
 shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && gulp bundlejs');
+exit(0);
 $ionic_process_id = shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && nohup ionic serve --port=' . $test_run_data['app_server_port'] . ' > /dev/null 2>&1 & echo $!');
 $ionic_process_id = explode("\n", $ionic_process_id);
 $ionic_process_id = $ionic_process_id[1];

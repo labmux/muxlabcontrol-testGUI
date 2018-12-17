@@ -33,7 +33,7 @@ $app->options('/{routes:.+}', function ($request, $response, $args) {
 $app->add(function ($req, $res, $next) {
     $response = $next($req, $res);
     return $response
-        //->withHeader('Access-Control-Allow-Origin', '*')
+        ->withHeader('Access-Control-Allow-Origin', '*')
         ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
         ->withHeader('Access-Control-Max-Age', '1000')
         ->withHeader('Access-Control-Allow-Headers', 'x-requested-with, Content-Type, origin, authorization, accept, client-security-token');
