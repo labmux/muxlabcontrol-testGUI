@@ -34,7 +34,10 @@ class MNC {
 
     public static function getAvailableVersions() {
         $availableVersions = [];
+
+        //$raw_versions = `sudo -u muxlab true && cd / && VBoxManage snapshot primary list --machinereadable`;
         $raw_versions = `sudo -u muxlab VBoxManage snapshot primary list --machinereadable`;
+
         $raw_versions = explode("\n", $raw_versions);
 
         foreach ($raw_versions as $raw_version) {
@@ -49,6 +52,7 @@ class MNC {
     }
 
     public static function createMNCInstance($name, $mnc_version, $system_initiated = false) {
+
         if (empty($name)) {
             return array(
                 'status' => 'error',
