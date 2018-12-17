@@ -1,0 +1,25 @@
+When first checking this project from Git, install composer, and run "composer install"
+
+Virtualizing the 811 [works!]
+
+Creating an 811 image
+
+The image used to flash 811s in production will not work for our purposed. Create your own image by booting the 811 you’d like to virtualize. Then, from a different computer, run this command:
+
+ssh root@192.168.168.50 "dd if=/dev/mmcblk0 | gzip -1 -" | dd of=mnc811.gz
+
+Creating the virtual box harddrive
+
+The resulting file is a gzipped image (should be around 2GB, decompressed 30G, make sure you have space for this).
+On the host machine, decompress this file. For convenience, rename the resulting file to include an extension, say .img.
+Then (install virtualbox) and run this command:
+VBoxManage convertfromraw -format VDI mnc.img mncVDI.vdi
+
+Then, open virtual box using
+sudo virtualbox
+
+Then,
+Create a new box (64-bit) using the new VDI file (“Use an existing virtual hard drive file”)
+Give it at least 2GB or RAM (4GB used in test)
+System > Enable EFI (special OSes only)
+That’s it!

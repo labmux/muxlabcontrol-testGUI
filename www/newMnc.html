@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html >
+<html lang="en">
 <head>
-    <title>Muxlab Control Tests</title>
-
+    <meta charset="UTF-8">
+    <title>Title</title>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
@@ -19,40 +19,19 @@
     <script src="app.js"></script>
     <script src="bootstrapmodal.js"></script>
 
-
 </head>
 
-<body ng-app="uiBootstrap">
+<body>
 <div ng-controller="ModalCtrl as $ctrl">
-    <pre>
-        <h1>Virtual MNCs <button type="button" class="btn btn-primary" ng-click="$ctrl.open()">+ New</button></h1>
-    </pre>
-
-    <!-- New Mnc -->
-    <script type="text/ng-template" id="newMnc.html">
+    <script type="text/ng-template">
         <div class="modal-header">
             <h3 class="modal-title">New MNC</h3>
         </div>
 
         <div class="modal-body">
-            <h4>Name:</h4>
-            <input type="text" ng-model="mncname">
-
-            <h4>Version</h4>
-            <!-- Dropdown -->
-            <div class="btn-group" uib-dropdown keyboard-nav>
-                    <button id="simple-btn-keyboard-nav" type="button" class="btn btn-primary" uib-dropdown-toggle>
-                        Dropdown <span class="caret"></span>
-                    </button>
-
-                    <!-- NOT WORKING -->
-                    <ul>
-                        <li ng-repeat="mnc in $ctrl.getMncs()" role="menuitem">
-                            <a href="#">{{mnc}}</a>
-                        </li>
-                    </ul>
-            </div>
-
+            <ul>
+                <li>Test</li>
+            </ul>
         </div>
 
         <div class="modal-footer">
@@ -62,8 +41,5 @@
     </script>
 
 </div>
-
-
-
 </body>
 </html>

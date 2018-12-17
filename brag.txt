@@ -1,0 +1,21 @@
+Stuff to brag about during presentation of this project
+
+- auto sync app with app's git
+- mult users
+- web interface
+- simultaneous tests
+- automated reports of success / fail and then you can open the reports for specifics
+- real image of 811
+- realistic protractor tests, explain scenario tests
+- anyone can boot up any version of 811 and test with it, boots in < 1 second
+- 811 will be accessible on the network with its own ip address so you can test more involved situations
+- you can customize an 811 and then run any app version against it
+- you can supply an update file and the system will auto update each 811 before running the tests on it
+- easy to maintain and add new 811 version
+- will delete vms older than 36h to prevent misuse
+- sends out email when test is complete
+- uses cutting edge technology such as selenium
+- reliable tests which use a clean app installation and a clean 811 installation for each test run
+- (will need more time to implement specific tests)
+- show video of screen working protractor clicking different things, take a video of a fast task that is easy to follow as well
+- this project is hosted on git and includes instructions on how to manage it
