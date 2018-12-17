@@ -7,11 +7,25 @@
     <link href="css/ui-bootstrap-tpls-2.5.0.min.js" rel="stylesheet">
 </head>
 <body>
-<div ng-controller="ModalCtrl">
-    <h1>
-        Virtual MNCs
-        <button type="button" class="btn btn-primary" ng-click="$ctrl.addMnc()">+</button>
-    </h1>
+<h1>
+    Virtual MNCs
+</h1>
+<button type="button" data-toggle="modal" data-target="#addMNC_modal" class="btn btn-primary">+ New</button>
+
+<div ng-controller="ModalCtrl" id="addMNC_modal" class="modal fade" role="dialog">
+    <div class="modal-header">
+        <h3>Add Mnc</h3>
+    </div>
+
+    <div class="modal-body">
+
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Add</button>
+    </div>
+
 </div>
 
 

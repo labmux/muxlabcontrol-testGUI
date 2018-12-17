@@ -27,3 +27,14 @@ angular.module('uiBootsrtap').controller('ModalCtrl', function ($uibModal) {
 
     }
 })
+
+angular.module('uiBootstrap').config(function ($stateProvider, $urlRouterProvider) {
+    $urlRouterProvider.when('', '/home');
+
+    $stateProvider
+        .state('root', {
+            url: '/',
+            template: 'You are at root'
+        })
+        .state()
+})
