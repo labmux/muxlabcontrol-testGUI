@@ -1,4 +1,4 @@
-angular.module('uiBootstrap', ['ui.bootstrap']);
+var app = angular.module('uiBootstrap', ['ui.bootstrap']);
 
 angular.module('uiBootstrap').factory('TestServerAPIService', ['$q', '$http', function TestServerAPIServiceFactory ($q, $http) {
 
