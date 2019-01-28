@@ -13,9 +13,8 @@ var isEmpty = function (str) {
 app.controller('HomeCtrl', function ($scope, $uibModal, TestServerAPIService, $interval) {
 
     var $ctrl = this;
-
     /**
-     * Refetches array of mncs and refreshes the page
+     * Fetches mnc data for the table
      */
     $ctrl.refreshPage = function () {
         TestServerAPIService.getMNCVirtualMachines().then(function (resp) {
@@ -30,9 +29,9 @@ app.controller('HomeCtrl', function ($scope, $uibModal, TestServerAPIService, $i
         $ctrl.refreshPage();
     }, 1000);
 
-    $ctrl.openModal = function () {
+    $ctrl.openNewMncModal = function () {
         var modalInstance = $uibModal.open({
-            templateUrl: 'newMnc.html',
+            templateUrl: 'modals/newMnc.html',
             controller: 'ModalInstanceCtrl',
             controllerAs: '$ctrl',
             animation: true,
@@ -46,7 +45,7 @@ app.controller('HomeCtrl', function ($scope, $uibModal, TestServerAPIService, $i
 
     $ctrl.deleteMNC = function (mnc_id) {
         var deleteModalInstance  = $uibModal.open({
-            templateUrl: 'deleteMNC.html',
+            templateUrl: 'modals/deleteMNC.html',
             controller: function ($uibModalInstance, TestServerAPIService, mnc_id) {
                 this.confirmDelete = function () {
                     TestServerAPIService.deleteMNCVirtualMachine(mnc_id).then(function (status) {
@@ -54,7 +53,9 @@ app.controller('HomeCtrl', function ($scope, $uibModal, TestServerAPIService, $i
                     }).catch(function (e) {
                         console.log("Failed to delete mnc virtual machine");
                         console.log(e);
-                        window.alert('Error occurred while deleting mnc');
+                        $scope.alert = [
+                            {type:'danger', msg: "Error occurred while deleting mnc"}
+                        ];
                     });
 
                     $ctrl.refreshPage();
@@ -85,7 +86,9 @@ app.controller('HomeCtrl', function ($scope, $uibModal, TestServerAPIService, $i
         }).catch(function (e) {
             console.log("failed to start mnc virtual machine");
             console.log(e);
-            window.alert("Error occurred while starting mnc virtual machine");
+            $scope.alert = [
+                {type:'danger', msg: "Error occurred while starting mnc virtual machine"}
+            ];
         });
     };
 
@@ -96,7 +99,7 @@ app.controller('HomeCtrl', function ($scope, $uibModal, TestServerAPIService, $i
         }).catch(function (e) {
             console.log("failed to start mnc virtual machine");
             console.log(e);
-            window.alert("Error occurred while stopping mnc virtual machine");
+            $scope.alert = [{type:'danger', msg: "Error occurred while stopping mnc virtual machine"}];
         })
     };
 });
@@ -109,7 +112,7 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, TestSer
     }).catch(function (e) {
         console.log('failed to get available mnc versions')
         console.log(e);
-        window.alert("Error occurred while getting available mnc versions");
+        $scope.alert = [{type:'danger', msg: "Error occurred while getting available mnc versions"}];
     });
 
     this.createVM = function () {
@@ -119,10 +122,10 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, TestSer
 
         //make sure name and version have been selected
         if (isEmpty($scope.mnc_name)) {
-            window.alert("Name field empty");
+            $scope.alert = [{type:'danger', msg: "Name field empty"}];
         }
         else if (isEmpty($scope.mnc_versionSelected)) {
-            window.alert("Version not selected");
+            $scope.alert = [{type:'danger', msg: "Version not selected"}];
         }
         else {
             //create mnc virtual machine
@@ -131,7 +134,7 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, TestSer
             }).catch(function (e) {
                 console.log("Failed to create mnc virtual machine");
                 console.log(e);
-                window.alert('Error occurred while creating virtual machine')
+                $scope.alert = [{type:'danger', msg: "Error occurred while creating virtual machine"}];
             });
         }
         $uibModalInstance.close();
