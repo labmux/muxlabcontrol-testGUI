@@ -10,6 +10,8 @@ class TestSuite {
     public static function getTestSuites() {
         $suites = DB::query('SELECT * FROM test_suite', array());
         for ($i = 0; $i < sizeof($suites); $i++) {
+            $suites[$i]['mnc_versions'] = json_decode($suites[$i]['mnc_versions']);
+            $suites[$i]['app_versions'] = json_decode($suites[$i]['app_versions']);
             $suites[$i]['test_suite_runs'] = DB::query('SELECT * FROM test_suite_run WHERE test_suite_id = ?:[suite_id,i]', array(
                 'suite_id' => $suites[$i]['id']
             ));
