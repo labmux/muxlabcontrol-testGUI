@@ -48,14 +48,14 @@ class TestSuite {
             );
         }
 
-        //validate the mnc's specified
+        //validate the version's specified
         $existing_boxes = MNC::getMNCs();
         foreach ($mnc_versions as $mnc_version) {
             if (empty($mnc_version['user_defined'])) {
                 if (empty($mnc_version['identifier']) || !MNC::isValidMNCVersion($mnc_version['identifier'])) {
                     return array(
                         'status' => 'error',
-                        'message' => 'test suite specified invalid mnc version TS004'
+                        'message' => 'test suite specified invalid version version TS004'
                     );
                 }
             } else {//ie we are dealing with a user defined box

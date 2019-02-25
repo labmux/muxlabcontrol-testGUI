@@ -59,7 +59,7 @@ if (!empty($test_run_data['mnc_user_defined'])) {
         $client = new \GuzzleHttp\Client(['cookies' => true]);
 
         //log in
-        $r = $client->request('POST', 'http://' . $mnc_instance['ip_address'] . '/mnc/', [
+        $r = $client->request('POST', 'http://' . $mnc_instance['ip_address'] . '/version/', [
             'form_params' => [
                 'p_cmd' => 'mainLogin',
                 'p_userName' => 'admin',
@@ -77,7 +77,7 @@ if (!empty($test_run_data['mnc_user_defined'])) {
         ]);
 
 //send over the update zip file
-        $response = $client->request('POST', 'http://' . $mnc_instance['ip_address'] . '/mnc/xSoftwareUpdateV202/xSoftwareUpdate.php', [
+        $response = $client->request('POST', 'http://' . $mnc_instance['ip_address'] . '/version/xSoftwareUpdateV202/xSoftwareUpdate.php', [
             'multipart' => [
                 [
                     'name'     => 'zip_file',
@@ -93,7 +93,7 @@ if (!empty($test_run_data['mnc_user_defined'])) {
                 'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebkit/537.36 (KHTML, Like Gecko) Chrome/70.0.3538/110 Safari/537.36'
             ]
         ]);
-        sleep(1);//while the mnc updates and reboots
+        sleep(1);//while the version updates and reboots
     }
 
     //TODO @ELIRAN in the web interface don't let the user specify an update file when it's a user defined MNC
@@ -132,34 +132,48 @@ shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && npm rebuild nod
 shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && gulp sass');
 shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && gulp templatecache');
 shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && gulp bundlejs');
-exit(0);
+
+
 $ionic_process_id = shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && nohup ionic serve --port=' . $test_run_data['app_server_port'] . ' > /dev/null 2>&1 & echo $!');
 $ionic_process_id = explode("\n", $ionic_process_id);
 $ionic_process_id = $ionic_process_id[1];
 
+
+//TODO @ELIRAN if you can save the results of the protractor run to a file under $app_path/results_{test_suite_ID}_{test_run_id}_{mnc_version}_{app_version}.txt
+//we will send this file path to protractors config file
+$testResults_path = $app_path . '/results_' . $test_run_data['test_suite_id'] . '_' . $data['test_run_id'] . '_' . $test_run_data['mnc_identifier'] . '_' . $test_run_data['app_version'] . '.txt';
+$server_port = $test_run_data['app_server_port'];
 
 
 //TODO @ELIRAN CODE HERE for protractor / selenium etc
 /**
  * Eliran - here are the variables that are available to you at this point:
  * $test_run_data['app_version'] this is the app version we are testing now
- * $test_run_data['mnc_identifier'] this is the version of the mnc we are testing BUT it might be a random string, see the next variable below
+ * $test_run_data['mnc_identifier'] this is the version of the version we are testing BUT it might be a random string, see the next variable below
  * $test_run_data['mnc_user_defined'] this means that the user created an MNC and may have changed files on it, so we can't assume it's any specific version of the MNC, so just assume this is the latest MNC version for your tests
  * $test_run_data['app_server_port'] this is the port that ionic serve is serving on so you can point protractor to http://localhost:PORT
  *
  * Note that this server will run multiple tests simultaneously so let me know if selenium is bugging out due to port number being used / different etc. we might generate our own port #s and store them in the DB or something
  */
-shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && ELIRAN');//Eliran place your commands all the way at the end of the string after the second "&&"
-shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && STUFF');
-shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && GOES');
+shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && sudo webdriver-manager start');//Eliran place your commands all the way at the end of the string after the second "&&"
+shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && protractor conf.js --params.port  ' . $test_run_data['app_server_port'] . ' > ' . $testResults_path);
 shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && HERE');
 
 
-
-
-$test_run_result = 'success';
-//TODO @ELIRAN if you can save the results of the protractor run to a file under $app_path/results_{test_suite_ID}_{test_run_id}_{mnc_version}_{app_version}.txt
 //TODO @ELIRAN and once that's done, scan each of those files for any failures in protractor (I guess if the word FAILED is there or something) and then assign it to the variable $test_run_result (enter "failed" or "success" in it)
+
+//scan test results for failure
+
+$file = file_get_contents($e2etestsPath);
+
+
+if (strpos($file, 'failed') === false)
+    $test_run_result = 'success';
+else
+    $test_run_result = 'failed';
+
+
+
 
 //stop ionic server
 shell_exec('sudo -u muxlab true && kill ' . $ionic_process_id);//TODO test if this works
@@ -174,7 +188,7 @@ if (empty($test_run_data['mnc_user_defined'])) {
     'status' => $test_run_result
 ));
 
-//check if this was the last run and if so mark the whole suite as compelte
+//check if this was the last run and if so mark the whole suite as complete
 $all_test_runs = \TestPlayground\DB::query('SELECT * FROM test_suite_run WHERE status = "in_progress" AND test_suite_id = ?:[test_suite_id,i]', array(
     'test_suite_id' => $test_run_data['test_suite_id']
 ));
@@ -184,3 +198,5 @@ if (sizeof($all_test_runs) === 0) {//test suite has all its child processes fini
     ));
     //TODO since all tests are done, zip all the results into a downloadable file
 }
+?>
+

@@ -31,7 +31,7 @@ CREATE TABLE `config` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `mnc`
+-- Table structure for table `version`
 --
 
 DROP TABLE IF EXISTS `mnc`;

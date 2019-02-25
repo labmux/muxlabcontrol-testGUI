@@ -1,0 +1,31 @@
+<div class="modal-header">
+    <h3 class="modal-title">New Test Suite</h3>
+</div>
+
+<div class="modal-body">
+    <label for="name">Test Suite Name:</label>
+    <input type="text" ng-model="testsuite_name" id="name"><br>
+
+    <!-- MNC Versions checkboxes -->
+    <label>MNC Versions</label>
+    <div class="list-group">
+        <div ng-repeat="version in availableMncVersions track by $index">
+            <input type="checkbox" ng-click="toggleSelectedMncVersion(version)" id="mncVersion-{{$index}}">
+            <label class="list-group-item" for="mncVersion-{{$index}}">{{version}}</label>
+        </div>
+    </div>
+
+    <!-- App Versions checkboxes -->
+    <label>App Versions</label>
+    <div class="list-group">
+        <div ng-repeat="version in availableAppVersions track by $index">
+            <input type="checkbox" ng-model="selectedAppVersions[$index]" id="appVersion-{{$index}}">
+            <label class="list-group-item" for="appVersion-{{$index}}">{{version}}</label>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-primary" type="submit" ng-click="$ctrl.createTestSuite()">Build Test Suite</button>
+    <button class="btn btn-danger" type="button" ng-click="$ctrl.cancel()">Cancel</button>
+</div>

@@ -7,7 +7,7 @@ use \Psr\Http\Message\ResponseInterface as Response;
  * Endpoint Description
  */
 
-$app->get('/mnc/available-versions', function (Request $request, Response $response, $args) {
+$app->get('/version/available-versions', function (Request $request, Response $response, $args) {
     \TestPlayground\TestPlayground::init();
 
     $result = TestPlayground\MNC::getAvailableVersions();
@@ -21,7 +21,7 @@ $app->get('/mnc/available-versions', function (Request $request, Response $respo
     return $response;
 });
 
-$app->get('/mnc', function (Request $request, Response $response, $args) {
+$app->get('/version', function (Request $request, Response $response, $args) {
     \TestPlayground\TestPlayground::init();
 
     $result = TestPlayground\MNC::getMNCs();
@@ -35,7 +35,7 @@ $app->get('/mnc', function (Request $request, Response $response, $args) {
     return $response;
 });
 
-$app->post('/mnc', function (Request $request, Response $response, $args) {
+$app->post('/version', function (Request $request, Response $response, $args) {
     \TestPlayground\TestPlayground::init();
     $data = $request->getParsedBody();
 
@@ -57,7 +57,7 @@ $app->post('/mnc', function (Request $request, Response $response, $args) {
     return $response;
 });
 
-$app->delete('/mnc/{mnc_id}', function (Request $request, Response $response, $args) {
+$app->delete('/version/{mnc_id}', function (Request $request, Response $response, $args) {
     \TestPlayground\TestPlayground::init();
     
     if (emptynz($args['mnc_id'])) {
@@ -75,7 +75,7 @@ $app->delete('/mnc/{mnc_id}', function (Request $request, Response $response, $a
     return $response;
 });
 
-$app->get('/mnc/{mnc_id}/start', function (Request $request, Response $response, $args) {
+$app->get('/version/{mnc_id}/start', function (Request $request, Response $response, $args) {
     \TestPlayground\TestPlayground::init();
 
     if (emptynz($args['mnc_id'])) {
@@ -93,7 +93,7 @@ $app->get('/mnc/{mnc_id}/start', function (Request $request, Response $response,
     return $response;
 });
 
-$app->get('/mnc/{mnc_id}/stop', function (Request $request, Response $response, $args) {
+$app->get('/version/{mnc_id}/stop', function (Request $request, Response $response, $args) {
     \TestPlayground\TestPlayground::init();
 
     if (emptynz($args['mnc_id'])) {

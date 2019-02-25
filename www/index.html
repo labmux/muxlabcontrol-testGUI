@@ -4,6 +4,25 @@
     <title>Muxlab Control Tests</title>
 
 
+    <!--&lt;!&ndash; Bootstrap css &ndash;&gt;-->
+    <!--&lt;!&ndash;<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">&ndash;&gt;-->
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">-->
+
+    <!--&lt;!&ndash; jQuery library &ndash;&gt;-->
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>-->
+
+    <!--&lt;!&ndash; Angular &ndash;&gt;-->
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.min.js"></script>-->
+
+    <!--&lt;!&ndash; Bootsrtap JS &ndash;&gt;-->
+    <!--&lt;!&ndash;<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>&ndash;&gt;-->
+    <!--&lt;!&ndash;<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>&ndash;&gt;-->
+    <!--&lt;!&ndash;<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>&ndash;&gt;-->
+    <!--&lt;!&ndash;<script src="css/ui-bootstrap-tpls-2.5.0.min.js"></script>&ndash;&gt;-->
+    <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>-->
+    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap.js">-->
+
+
     <!-- Bootstrap css -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
@@ -18,12 +37,14 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap.js">
 
-
     <!-- JS files -->
     <script src="app.js"></script>
     <script src="js/bootstrapmodal.js"></script>
 
     <style>
+        /**
+            MNC Table status
+        */
         .red {
             height: 15px;
             width: 15px;
@@ -52,6 +73,37 @@
             from { transform: scale(1) rotate(0deg);}
             to { transform: scale(1) rotate(360deg);}
         }
+
+        /**
+           Test Suites Modal
+         */
+        .list-group input[type="checkbox"] {
+            display: none;
+        }
+
+        .list-group input[type="checkbox"] + .list-group-item {
+            cursor: pointer;
+        }
+
+        .list-group input[type="checkbox"] + .list-group-item:before {
+            content: "\2713";
+            color: transparent;
+            font-weight: bold;
+            margin-right: 1em;
+        }
+
+        .list-group input[type="checkbox"]:checked + .list-group-item {
+            background-color: #0275D8;
+            color: #FFF;
+        }
+
+        .list-group input[type="checkbox"]:checked + .list-group-item:before {
+            color: inherit;
+        }
+
+        [hidden] {
+            display: none !important;
+        }
     </style>
 </head>
 
@@ -60,55 +112,79 @@
 
 <div ng-controller="HomeCtrl as $ctrl">
 
-    <div uib-alert ng-repeat="alert in alert" ng-class="'alert-' + (alert.type || 'warning')" class="alert alert-success alert-dismissible" role="alert">
+    <header class="jumbotron">
+        <h1>Virtual MNCs</h1>
+
+        <div style="padding-top: 35px">
+            <button type="button" class="btn btn-primary btn-lg" ng-click="$ctrl.createNewVirtualMncModal()">Create Virtual MNC</button>
+            <button type="button" class="btn btn-warning btn-lg" ng-click="$ctrl.createNewTestSuiteModal()">Create Test Suite</button>
+        </div>
+    </header>
+
+    <!-- Alert message -->
+    <div uib-alert ng-repeat="alert in alert" ng-class="'alert-' + (alert.type || 'warning')" class="alert alert-success alert-dismissible fade in" role="alert">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
         {{alert.msg}}
     </div>
 
+    <main class="container">
+        <!-- Virtual MNC Table-->
+        <h1 class="display-2 text-center">Virtual MNCs Table</h1>
+        <table class="table table-hover table-bordered">
+            <tr>
+                <th>Name</th>
+                <th>IP Address</th>
+                <th>Time Created</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+            <tr ng-repeat="mnc in mncs" ng-class="{'warning' : mnc.system_initiated == 1}">
+                <td>{{ mnc.name }}</td>
+                <td>{{ mnc.ip_address }}</td>
+                <td>{{ mnc.timestamp_created }}</td>
+                <td>&nbsp;&nbsp;&nbsp;&nbsp;<span ng-class="{red:mnc.status == 'stopped', green:mnc.status == 'ready' || mnc.status == 'started','glyphicon glyphicon-refresh glyphicon-refresh-animate':mnc.status == 'uninstantiated'}"></span></td>
+                <td class="input-group">
+                    <div class="input-group-btn">
+                        <button class="btn btn-default" ng-if="mnc.status == 'stopped'" ng-click="$ctrl.startMNC(mnc.id)"><span class="glyphicon glyphicon-play"></span></button>
+                        <button class="btn btn-default" ng-if="mnc.status == 'started' || mnc.status == 'ready'" ng-click="$ctrl.stopMNC(mnc.id)"><span class="glyphicon glyphicon-stop"></span></button>
+                        <button class="btn btn-default" ng-click="$ctrl.openMNC(mnc)"><span class="glyphicon glyphicon-globe"></span></button>
+                        <button class="btn btn-danger" ng-click="$ctrl.deleteMNC(mnc.id)"><span class="glyphicon glyphicon-trash"></span></button>
+                    </div>
+                </td>
+            </tr>
+        </table>
 
-    <pre>
-        <h1>Virtual MNCs <button type="button" class="btn btn-primary" ng-click="$ctrl.openNewMncModal()">+ New</button></h1>
-    </pre>
+        <!-- Test Suite Table-->
+        <h1 class="display-2 text-center">Test Suites Table</h1>
+        <table class="table table-hover table-bordered">
+            <tr class="table-he">
+                <th>Name</th>
+                <th>MNC Versions</th>
+                <th>App Versions</th>
+                <th>Time Created</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+            <tr ng-repeat="testsuite in testsuites">
+                <td>{{testsuite.name}}</td>
+                <td><div ng-repeat="mncVersion in testsuite.mnc_versions track by $index">{{ mncVersion.identifier }}</div></td>
+                <td><div ng-repeat="appVersion in testsuite.app_versions track by $index">{{ appVersion }}</div></td>
+                <td>{{ testsuite.timestamp_created }}</td>
+                <td>&nbsp;&nbsp;&nbsp;&nbsp;<span ng-class="{red:testsuite.status == 'stopped', green:testsuite.status == 'done' || testsuite.status == 'started','glyphicon glyphicon-refresh glyphicon-refresh-animate':testsuite.status == 'pending' || testsuite.status == 'in_progress' || testsuite.status == ''}"></span></td>
+                <td class="input-group">
+                    <div class="">
+                        <label class="btn btn-default">
+                            Choose file <input type="file" hidden>
+                        </label>
+                        <button class="btn btn-danger" ng-click="$ctrl.deleteTestSuite(testsuite.id)"><span class="glyphicon glyphicon-trash"></span></button>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </main>
 
-    <!--<div uib-alert>{{alert.msg}}</div>-->
-
-    <!-- Virtual MNC Table-->
-    <table class="table table-hover">
-        <tr>
-            <th>Name</th>
-            <th>IP Address</th>
-            <th>Time Created</th>
-            <th>Status</th>
-            <th>Actions</th>
-        </tr>
-        <tr ng-repeat="mnc in mncs" ng-class="{'warning' : mnc.system_initiated == 1}">
-            <td>{{ mnc.name }}</td>
-            <td>{{ mnc.ip_address }}</td>
-            <td>{{ mnc.timestamp_created }}</td>
-            <td>
-                &nbsp;&nbsp;&nbsp;&nbsp;<span ng-class="{red:mnc.status == 'stopped', green:mnc.status == 'ready' || mnc.status == 'started',
-                'glyphicon glyphicon-refresh glyphicon-refresh-animate':mnc.status == 'uninstantiated'}">
-                </span>
-            </td>
-            <td>
-                <button class="btn btn-default" ng-if="mnc.status == 'stopped'" ng-click="$ctrl.startMNC(mnc.id)">
-                        <span class="glyphicon glyphicon-play"></span>
-                </button>
-                <button class="btn btn-default" ng-if="mnc.status == 'started' || mnc.status == 'ready'" ng-click="$ctrl.stopMNC(mnc.id)">
-                        <span class="glyphicon glyphicon-stop"></span>
-                </button>
-                <button class="btn btn-default" ng-click="$ctrl.openMNC(mnc)">
-                    <span class="glyphicon glyphicon-globe"></span>
-                </button>
-                <button class="btn btn-danger" ng-click="$ctrl.deleteMNC(mnc.id)">
-                    <span class="glyphicon glyphicon-trash"></span>
-                </button>
-            </td>
-
-        </tr>
-    </table>
 </div>
 
 
