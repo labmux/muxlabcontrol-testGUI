@@ -156,7 +156,7 @@ $server_port = $test_run_data['app_server_port'];
  * Note that this server will run multiple tests simultaneously so let me know if selenium is bugging out due to port number being used / different etc. we might generate our own port #s and store them in the DB or something
  */
 shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && sudo webdriver-manager start');//Eliran place your commands all the way at the end of the string after the second "&&"
-shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && protractor conf.js --params.port  ' . $test_run_data['app_server_port'] . ' > ' . $testResults_path);
+shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && protractor conf.js --params.port  http://localhost:' . $test_run_data['app_server_port'] . ' --params.ipAddress ' . $mnc_instance['ip_address'] . '> ' . $testResults_path);
 shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && HERE');
 
 
