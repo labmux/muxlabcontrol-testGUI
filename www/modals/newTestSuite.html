@@ -10,7 +10,7 @@
     <label>MNC Versions</label>
     <div class="list-group">
         <div ng-repeat="version in availableMncVersions track by $index">
-            <input type="checkbox" ng-click="toggleSelectedMncVersion(version)" id="mncVersion-{{$index}}">
+            <input type="checkbox" ng-click="$ctrl.toggleSelectedMncVersion(version)" id="mncVersion-{{$index}}">
             <label class="list-group-item" for="mncVersion-{{$index}}">{{version}}</label>
         </div>
     </div>
@@ -19,7 +19,7 @@
     <label>App Versions</label>
     <div class="list-group">
         <div ng-repeat="version in availableAppVersions track by $index">
-            <input type="checkbox" ng-model="selectedAppVersions[$index]" id="appVersion-{{$index}}">
+            <input type="checkbox" ng-click="$ctrl.toggleSelectedAppVersion(version)" id="appVersion-{{$index}}">
             <label class="list-group-item" for="appVersion-{{$index}}">{{version}}</label>
         </div>
     </div>

@@ -2,16 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a388cf20-a8ac-4db8-a131-a50c725d143b" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/www/modals/newTestSuite.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/www/api/TestPlayground/MNC.php" beforeDir="false" afterPath="$PROJECT_DIR$/www/api/TestPlayground/MNC.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/www/api/TestPlayground/TestSuite.php" beforeDir="false" afterPath="$PROJECT_DIR$/www/api/TestPlayground/TestSuite.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/www/api/base.sql" beforeDir="false" afterPath="$PROJECT_DIR$/www/api/base.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/www/api/do_test.php" beforeDir="false" afterPath="$PROJECT_DIR$/www/api/do_test.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/www/api/routes/mnc.php" beforeDir="false" afterPath="$PROJECT_DIR$/www/api/routes/mnc.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/www/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/www/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/www/js/bootstrapmodal.js" beforeDir="false" afterPath="$PROJECT_DIR$/www/js/bootstrapmodal.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/www/modals/deleteMNC.html" beforeDir="false" afterPath="$PROJECT_DIR$/www/modals/deleteModal.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/www/modals/newMnc.html" beforeDir="false" afterPath="$PROJECT_DIR$/www/modals/newVirtualMnc.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/www/modals/newTestSuite.html" beforeDir="false" afterPath="$PROJECT_DIR$/www/modals/newTestSuite.html" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -42,20 +36,8 @@
       <file leaf-file-name="bootstrapmodal.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/www/js/bootstrapmodal.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2462">
-              <caret line="57" column="34" lean-forward="true" selection-start-line="57" selection-start-column="34" selection-end-line="57" selection-end-column="34" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="index.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/www/index.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="509">
-              <caret line="173" column="61" lean-forward="true" selection-start-line="173" selection-start-column="61" selection-end-line="173" selection-end-column="61" />
-              <folding>
-                <element signature="e#4841#4848#1" expanded="true" />
-              </folding>
+            <state relative-caret-position="101">
+              <caret line="20" column="19" selection-start-line="20" selection-start-column="19" selection-end-line="20" selection-end-column="19" />
             </state>
           </provider>
         </entry>
@@ -63,8 +45,17 @@
       <file leaf-file-name="app.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/www/app.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="840">
-              <caret line="56" column="27" selection-start-line="56" selection-start-column="27" selection-end-line="56" selection-end-column="27" />
+            <state relative-caret-position="1380">
+              <caret line="92" column="8" selection-start-line="92" selection-start-column="8" selection-end-line="92" selection-end-column="8" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="TestSuite.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/www/api/TestPlayground/TestSuite.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="435">
+              <caret line="29" column="27" selection-start-line="29" selection-start-column="27" selection-end-line="29" selection-end-column="27" />
             </state>
           </provider>
         </entry>
@@ -72,8 +63,17 @@
       <file leaf-file-name="do_test.php" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/www/api/do_test.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="198">
-              <caret line="169" column="16" selection-start-line="169" selection-start-column="16" selection-end-line="169" selection-end-column="16" />
+            <state relative-caret-position="325">
+              <caret line="164" lean-forward="true" selection-start-line="164" selection-end-line="164" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="test-suite.php" pinned="true" current-in-tab="false">
+        <entry file="remoteDeploymentFS://&lt;98110e0f-851a-4164-b441-dfe787b16a84&gt;/www/api/routes/test-suite.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="498">
+              <caret line="49" column="48" lean-forward="true" selection-start-line="49" selection-start-column="48" selection-end-line="49" selection-end-column="48" />
             </state>
           </provider>
         </entry>
@@ -93,9 +93,16 @@
       <find>select</find>
       <find>selecte</find>
       <find>openmod</find>
+      <find>ts004</find>
+      <find>exit</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
+    <option name="PREVIOUS_COMMIT_AUTHORS">
+      <list>
+        <option value="Eliran Assaraf &lt;eliran.a.bg@gmail.com&gt;" />
+      </list>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="IdeDocumentHistory">
@@ -109,10 +116,11 @@
         <option value="$PROJECT_DIR$/www/api/homepage/deleteMNC.html" />
         <option value="$PROJECT_DIR$/www/api/deleteConfirm.html" />
         <option value="$PROJECT_DIR$/www/homepage/deleteMNC.html" />
-        <option value="$PROJECT_DIR$/www/js/bootstrapmodal.js" />
         <option value="$PROJECT_DIR$/www/api/config.php" />
-        <option value="$PROJECT_DIR$/www/api/do_test.php" />
         <option value="$PROJECT_DIR$/www/index.html" />
+        <option value="$PROJECT_DIR$/www/modals/newTestSuite.html" />
+        <option value="$PROJECT_DIR$/www/js/bootstrapmodal.js" />
+        <option value="$PROJECT_DIR$/www/api/do_test.php" />
       </list>
     </option>
   </component>
@@ -148,18 +156,15 @@
       <path value="$PROJECT_DIR$/vendor/container-interop/container-interop" />
     </include_path>
   </component>
-  <component name="ProjectFrameBounds" fullScreen="true">
-    <option name="x" value="1280" />
-    <option name="y" value="-100" />
-    <option name="width" value="1600" />
-    <option name="height" value="900" />
+  <component name="ProjectFrameBounds" extendedState="6" fullScreen="true">
+    <option name="width" value="1280" />
+    <option name="height" value="800" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -167,15 +172,26 @@
               <item name="muxlabcontrol_testGUI" type="b2602c69:ProjectViewProjectNode" />
               <item name="muxlabcontrol_testGUI" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="muxlabcontrol_testGUI" type="b2602c69:ProjectViewProjectNode" />
+              <item name="muxlabcontrol_testGUI" type="462c0819:PsiDirectoryNode" />
+              <item name="www" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="WebServerToolWindowFactoryState" value="true" />
+    <property name="WebServerToolWindowPanel.toolwindow.highlight.mappings" value="true" />
+    <property name="WebServerToolWindowPanel.toolwindow.highlight.symlinks" value="true" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
@@ -220,29 +236,41 @@
       <workItem from="1547488580446" duration="5886000" />
       <workItem from="1547508923948" duration="4887000" />
       <workItem from="1549575640804" duration="2116000" />
+      <workItem from="1551980004814" duration="553000" />
+      <workItem from="1552322752991" duration="4194000" />
     </task>
+    <task id="LOCAL-00001" summary="please work">
+      <created>1552322926376</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1552322926376</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="51191000" />
+    <option name="totallyTimeSpent" value="55938000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1280" y="-100" width="1600" height="900" extended-state="0" />
+    <frame x="0" y="0" width="1440" height="900" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
       <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="File Transfer" order="8" weight="0.32827586" />
-      <window_info anchor="bottom" id="Version Control" order="7" weight="0.32935324" />
+      <window_info active="true" anchor="bottom" id="File Transfer" order="8" visible="true" weight="0.3272727" />
       <window_info anchor="bottom" id="Run" order="2" />
-      <window_info anchor="bottom" id="Terminal" order="7" weight="0.0" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.3292683" />
+      <window_info anchor="bottom" id="Version Control" order="7" weight="0.32827586" />
+      <window_info anchor="bottom" id="Terminal" order="7" weight="0.49818182" />
+      <window_info anchor="right" id="Remote Host" weight="0.3118741" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.18168813" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
-      <window_info anchor="right" id="Database" order="3" visible="true" weight="0.0" />
+      <window_info anchor="right" id="Database" order="3" weight="0.3297568" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="CSS-X-Fire" order="7" />
-      <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -258,14 +286,11 @@
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="please work" />
+    <option name="LAST_COMMIT_MESSAGE" value="please work" />
+  </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/www/app.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="840">
-          <caret line="56" column="27" lean-forward="true" selection-start-line="56" selection-start-column="27" selection-end-line="56" selection-end-column="27" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/www/js/bootstrapmodal.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="330">
@@ -447,11 +472,6 @@
     <entry file="file://$PROJECT_DIR$/www/api/TestPlayground/TestPlayground.php">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/www/api/TestPlayground/TestSuite.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1636" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/www/api/TestPlayground/MNC.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="475">
@@ -490,13 +510,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/www/homepage/deleteMNC.html" />
-    <entry file="file://$PROJECT_DIR$/www/app.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="840">
-          <caret line="56" column="27" selection-start-line="56" selection-start-column="27" selection-end-line="56" selection-end-column="27" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/www/api/config.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="75">
@@ -509,25 +522,43 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/www/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="509">
-          <caret line="173" column="61" lean-forward="true" selection-start-line="173" selection-start-column="61" selection-end-line="173" selection-end-column="61" />
-          <folding>
-            <element signature="e#4841#4848#1" expanded="true" />
-          </folding>
+        <state relative-caret-position="389">
+          <caret line="173" column="58" selection-start-line="173" selection-start-column="58" selection-end-line="173" selection-end-column="58" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/www/modals/newTestSuite.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="315">
+          <caret line="21" column="83" selection-start-line="21" selection-start-column="83" selection-end-line="21" selection-end-column="83" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/www/app.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1380">
+          <caret line="92" column="8" selection-start-line="92" selection-start-column="8" selection-end-line="92" selection-end-column="8" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/www/js/bootstrapmodal.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2462">
-          <caret line="57" column="34" lean-forward="true" selection-start-line="57" selection-start-column="34" selection-end-line="57" selection-end-column="34" />
+        <state relative-caret-position="101">
+          <caret line="20" column="19" selection-start-line="20" selection-start-column="19" selection-end-line="20" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/www/api/TestPlayground/TestSuite.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="435">
+          <caret line="29" column="27" selection-start-line="29" selection-start-column="27" selection-end-line="29" selection-end-column="27" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/www/api/do_test.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="169" column="16" selection-start-line="169" selection-start-column="16" selection-end-line="169" selection-end-column="16" />
+        <state relative-caret-position="325">
+          <caret line="164" lean-forward="true" selection-start-line="164" selection-end-line="164" />
         </state>
       </provider>
     </entry>

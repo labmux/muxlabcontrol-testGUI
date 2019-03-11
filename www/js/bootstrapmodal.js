@@ -34,9 +34,11 @@ app.controller('HomeCtrl', function ($scope, $uibModal, TestServerAPIService, $i
         });
     };
 
-    $interval(function () {
-        $ctrl.refreshPage();
-    }, 1000);
+    $ctrl.refreshPage();
+
+    // $interval(function () {
+    //     $ctrl.refreshPage();
+    // }, 10000);
 
     $ctrl.createNewVirtualMncModal = function () {
         let modalInstance = $uibModal.open({
@@ -209,6 +211,9 @@ app.controller('VirtualMachineCtrl', function ($scope, $uibModalInstance, TestSe
 
 app.controller('TestSuiteCtrl', function ($scope, $uibModalInstance, TestServerAPIService) {
     let $ctrl = this;
+    $scope.selectedMncVersions = [];
+    $scope.selectedAppVersions = [];
+
     //Get MNC Versions
     TestServerAPIService.getAvailableMNCVersions().then(function (versions) {
         console.log("get available mnc versions: " + versions.data);
@@ -235,10 +240,17 @@ app.controller('TestSuiteCtrl', function ($scope, $uibModalInstance, TestServerA
 
 
     $ctrl.createTestSuite = function () {
-        TestServerAPIService.createTestSuite($scope.testsuite_name, $scope.selectedMncVersions, $scope.selectedAppVersions).then(function (result) {
+        var mncVersions = [];
+        for (var i = 0; i < $scope.selectedMncVersions.length; i++ ) {
+            mncVersions.push({
+                identifier: $scope.selectedMncVersions[i]
+            });
+        }
+
+        TestServerAPIService.createTestSuite($scope.testsuite_name, mncVersions, $scope.selectedAppVersions).then(function (result) {
 
         }).catch(function (e) {
-            console.log("Failed to create test suite" + $scope.testsuite_name+ " " + $scope.selectedMncVersions + " " + $scope.selectedAppVersions);
+            console.log("Failed to create test suite" + $scope.testsuite_name + " " + $scope.selectedMncVersions + " " + $scope.selectedAppVersions);
             console.log(e);
             $scope.alert = [{type:'danger', msg: "Error occurred while creating test Suite"}];
             });
@@ -252,15 +264,21 @@ app.controller('TestSuiteCtrl', function ($scope, $uibModalInstance, TestServerA
     };
 
     $ctrl.toggleSelectedMncVersion = function (version) {
-        let i = $scope.selectedMncVersion.indexOf(version);
+        let i = $scope.selectedMncVersions.indexOf(version);
 
         if (i == -1)
-            $scope.selectedMncVersion.push(version);
+            $scope.selectedMncVersions.push(version);
         else
-            $scope.selectedMncVersion.splice(i, 1);
+            $scope.selectedMncVersions.splice(i, 1);
     };
 
-    $ctrl.toggleSelecteAppVersion = function () {
+    $ctrl.toggleSelectedAppVersion = function (version) {
+        let i = $scope.selectedAppVersions.indexOf(version);
+
+        if (i == -1)
+            $scope.selectedAppVersions.push(version);
+        else
+            $scope.selectedAppVersions.splice(i, 1);
 
     }
 });
