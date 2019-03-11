@@ -238,7 +238,7 @@ app.controller('TestSuiteCtrl', function ($scope, $uibModalInstance, TestServerA
         TestServerAPIService.createTestSuite($scope.testsuite_name, $scope.selectedMncVersions, $scope.selectedAppVersions).then(function (result) {
 
         }).catch(function (e) {
-            console.log("Failed to create test suite");
+            console.log("Failed to create test suite" + $scope.testsuite_name+ " " + $scope.selectedMncVersions + " " + $scope.selectedAppVersions);
             console.log(e);
             $scope.alert = [{type:'danger', msg: "Error occurred while creating test Suite"}];
             });

@@ -160,7 +160,7 @@ shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && protractor conf
 shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && HERE');
 
 
-//TODO @ELIRAN and once that's done, scan each of those files for any failures in protractor (I guess if the word FAILED is there or something) and then assign it to the variable $test_run_result (enter "failed" or "success" in it)
+//TODO @ELIRAN and once that's done, scan each of those ffdiles for any failures in protractor (I guess if the word FAILED is there or something) and then assign it to the variable $test_run_result (enter "failed" or "success" in it)
 
 //scan test results for failure
 
