@@ -109,7 +109,7 @@ class TestSuite {
 
 
             //get list of ports used already for the app server (ionic serve)
-            $existing_runs = DB::query('SELECT * FROM test_suite_run WHERE status = "in_progress"', array());
+            $existing_runs = DB::query('SELECT * FROM test_suite_run ', array());
             $ports_busy = array();
             foreach ($existing_runs as $existing_run) {
                 if (!emptynz($existing_run['app_server_port'])) {
@@ -137,9 +137,14 @@ class TestSuite {
                     ), array('return_insert_id' => true));
 
                     //should spawn a new process for each test, since we don't want to wait here for them to complete before responding to the user
-                    exec("sudo -u muxlab nohup php /var/www/html/www/api/do_test.php \"test_run_id={$test_run_id}\" > /dev/null 2>&1 &");
+                    $output = array();
+                    exec("sudo -u muxlab nohup php /var/www/html/www/api/do_test.php \"test_run_id={$test_run_id}\" > /dev/null 2>&1 &", $output);
+                    //TO DEBUG USE BELOW INSTEAD OF ABOVE
+                    //exec("sudo -u muxlab php /var/www/html/www/api/do_test.php \"test_run_id={$test_run_id}\"", $output);
+                    var_dump($output);
                 }
             }
+
         }
 
         //inform the user that all was initiated and waiting for results

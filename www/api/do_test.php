@@ -16,6 +16,7 @@ spl_autoload_register(function ($classname) {
 $config['displayErrorDetails'] = true;
 $config['addContentLengthHeader'] = false;
 
+
 chdir('/');
 $data = array();
 if (!empty($argv[1])) {
@@ -138,7 +139,6 @@ $ionic_process_id = shell_exec('sudo -u muxlab true && cd ' . $appserver_path . 
 $ionic_process_id = explode("\n", $ionic_process_id);
 $ionic_process_id = $ionic_process_id[1];
 
-
 //TODO @ELIRAN if you can save the results of the protractor run to a file under $app_path/results_{test_suite_ID}_{test_run_id}_{mnc_version}_{app_version}.txt
 //we will send this file path to protractors config file
 $testResults_path = $app_path . '/results_' . $test_run_data['test_suite_id'] . '_' . $data['test_run_id'] . '_' . $test_run_data['mnc_identifier'] . '_' . $test_run_data['app_version'] . '.txt';
@@ -165,7 +165,7 @@ shell_exec('sudo -u muxlab true && cd ' . $testserver_path . ' && protractor con
 
 //scan test results for failure
 
-$file = file_get_contents($e2etestsPath);
+$file = file_get_contents($testResults_path);
 
 
 if (strpos($file, 'failed') === false)
