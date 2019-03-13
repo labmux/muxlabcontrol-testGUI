@@ -1,0 +1,22 @@
+{
+  "name": "muxlabcontrol_testgui",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://a_abitbol@bitbucket.org/eliranassaraf/muxlabcontrol_testgui.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/eliranassaraf/muxlabcontrol_testgui#readme",
+  "devDependencies": {
+    "json": "^9.0.6"
+  }
+}

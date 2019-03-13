@@ -138,9 +138,9 @@ class TestSuite {
 
                     //should spawn a new process for each test, since we don't want to wait here for them to complete before responding to the user
                     $output = array();
-                    exec("sudo -u muxlab nohup php /var/www/html/www/api/do_test.php \"test_run_id={$test_run_id}\" > /dev/null 2>&1 &", $output);
+                    //exec("sudo -u muxlab nohup php /var/www/html/www/api/do_test.php \"test_run_id={$test_run_id}\" > /dev/null 2>&1 &", $output);
                     //TO DEBUG USE BELOW INSTEAD OF ABOVE
-                    //exec("sudo -u muxlab php /var/www/html/www/api/do_test.php \"test_run_id={$test_run_id}\"", $output);
+                    exec("sudo -u muxlab php /var/www/html/www/api/do_test.php \"test_run_id={$test_run_id}\"", $output);
                     var_dump($output);
                 }
             }

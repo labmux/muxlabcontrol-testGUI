@@ -8,6 +8,8 @@ require __DIR__ . '/../../vendor/autoload.php';
 require 'utlis.php';
 require 'config.php';
 
+echo 'do_test.php';
+
 spl_autoload_register(function ($classname) {
     $classname = str_replace('\\', '/', $classname);
     require (__DIR__ . "/./" . $classname . ".php");
@@ -122,9 +124,13 @@ putenv('PATH=' . getenv('PATH') . ':/home/muxlab/.nvm/versions/node/v6.11.2/bin:
 shell_exec('sudo -u muxlab true && cd ' . $app_path . ' && git clone http://10.0.1.144:8080/git/a.abitbol/muxcontrol.git');
 $appserver_path = $app_path . '/muxcontrol';
 shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && git checkout tags/' . $test_run_data['app_version']);
-shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && apv init');//the app doesn't use semver, which prevents npm install from working... so change it to server here [for some reason this wasn't necessary during dev...]
 
-shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && apv set-version '. str_replace('v', '', $test_run_data['app_version']) . '.0');
+$fixed_version = str_replace('v', '', $test_run_data['app_version']);
+if (substr_count($fixed_version, '.') < 2) {
+    $fixed_version .= '.0';
+}
+
+shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && json -I -f package.json -e \'this.version="' . $fixed_version . '"\'');
 
 shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && npm install');
 shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && bower install');
@@ -155,7 +161,7 @@ $server_port = $test_run_data['app_server_port'];
  *
  * Note that this server will run multiple tests simultaneously so let me know if selenium is bugging out due to port number being used / different etc. we might generate our own port #s and store them in the DB or something
  */
-shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && webdriver-manager start');//Eliran place your commands all the way at the end of the string after the second "&&"
+shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && webdriver-manager start --detach');//Eliran place your commands all the way at the end of the string after the second "&&"
 
 $testserver_path = '/var/www/html/tests/e2e/';
 shell_exec('sudo -u muxlab true && cd ' . $testserver_path . ' && protractor conf.js --params.port  http://localhost:' . $test_run_data['app_server_port'] . ' --params.ipAddress ' . $mnc_instance['ip_address'] . '> ' . $testResults_path);

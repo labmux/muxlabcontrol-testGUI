@@ -117,10 +117,7 @@ class MNC {
             //now let's boot it and change the default IP to something unique
             self::startMNC($vbox_id);
 
-
-            while (!self::isMNCBooted('192.168.168.50')) {
-                usleep(100 * 1000);//100 milliseconds
-            }
+            self::waitForMNCBooted('192.168.168.50');
 
             $box_new_ip = self::getAvailableIPForMNC();
             if ($box_new_ip === false) {//no more ips available
@@ -136,6 +133,7 @@ class MNC {
             DB::query('UPDATE mnc SET status = "ready", ip_address = ?:[new_ip,s] WHERE id = ?:[id,i]', array('id' => $vbox_id, 'new_ip' => $box_new_ip));
 
             self::setIsMNCInstantiating(false);
+
             return array(
                 'status' => 'success',
                 'name' => $name,
@@ -267,11 +265,31 @@ iface lo inet loopback
     }
 
 
+    private static function waitForMNCBooted($ip) {
+        usleep(300 * 1000);//300 milliseconds before checking if done
+
+        $max_retries = 5;
+        while (!self::isMNCBooted($ip)) {
+            usleep(100 * 1000);//100 milliseconds
+            $max_retries--;
+            if ($max_retries <= 0) {
+                return false;
+            }
+        }
+        return true;
+    }
     private static function isMNCBooted($ip) {
         $url='http://' . $ip . '/mnc';
-        $content=file_get_contents($url);
 
-        if (strpos(strtolower($content), 'login') !== false) {
+        $ch = curl_init();
+        $timeout = 2;
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if ($httpcode < 400 || $httpcode >= 500) {
             return true;
         } else {
             return false;
