@@ -100,3 +100,7 @@ CREATE TABLE `test_suite_run` (
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2018-12-12 14:00:48
+
+
+ALTER TABLE `testplayground`.`test_suite_run`
+ADD COLUMN `activity_message` VARCHAR(255) NULL AFTER `app_server_port`;

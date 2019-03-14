@@ -8,8 +8,6 @@ require __DIR__ . '/../../vendor/autoload.php';
 require 'utlis.php';
 require 'config.php';
 
-echo 'do_test.php';
-
 spl_autoload_register(function ($classname) {
     $classname = str_replace('\\', '/', $classname);
     require (__DIR__ . "/./" . $classname . ".php");
@@ -36,7 +34,7 @@ $test_run_data = \TestPlayground\DB::query('SELECT test_suite_run.*, test_suite.
 ));
 $test_run_data = reset($test_run_data);
 
-\TestPlayground\DB::query('UPDATE test_suite_run SET status = "in_progress" WHERE id = ?:[id,i]', array(
+\TestPlayground\DB::query('UPDATE test_suite_run SET status = "in_progress", activity_message = "Test Initiated" WHERE id = ?:[id,i]', array(
     'id' => $data['test_run_id']
 ));
 
@@ -53,8 +51,14 @@ if (!empty($test_run_data['mnc_user_defined'])) {
     }
 } else {
 
+    \TestPlayground\DB::query('UPDATE test_suite_run SET activity_message = "Creating MNC for test" WHERE id = ?:[id,i]', array(
+        'id' => $data['test_run_id']
+    ));
     $mnc_instance = \TestPlayground\MNC::createMNCInstance('System Initiated ' . $test_run_data['test_suite_id'] . '_' . $data['test_run_id'], $test_run_data['mnc_identifier'], true);
     //run the update file here if applicable
+    \TestPlayground\DB::query('UPDATE test_suite_run SET activity_message = "MNC Created" WHERE id = ?:[id,i]', array(
+        'id' => $data['test_run_id']
+    ));
 
     if (!empty($test_run_data['update_file'])) {
 
@@ -101,7 +105,9 @@ if (!empty($test_run_data['mnc_user_defined'])) {
 
     //TODO @ELIRAN in the web interface don't let the user specify an update file when it's a user defined MNC
 }
-
+\TestPlayground\DB::query('UPDATE test_suite_run SET activity_message = "Setting up folders for app" WHERE id = ?:[id,i]', array(
+    'id' => $data['test_run_id']
+));
 //create a new MuxLabControl app instance for this test
 if (!is_dir('/var/www/html/www/test-runs')) {
     shell_exec('sudo -u muxlab mkdir /var/www/html/www/test-runs ');
@@ -120,6 +126,9 @@ $app_path = $test_run_path . '/app';
 if (!is_dir($app_path)) {
     shell_exec('sudo -u muxlab mkdir ' . $app_path);
 }
+\TestPlayground\DB::query('UPDATE test_suite_run SET activity_message = "Installing app from Git" WHERE id = ?:[id,i]', array(
+    'id' => $data['test_run_id']
+));
 putenv('PATH=' . getenv('PATH') . ':/home/muxlab/.nvm/versions/node/v6.11.2/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games');
 shell_exec('sudo -u muxlab true && cd ' . $app_path . ' && git clone http://10.0.1.144:8080/git/a.abitbol/muxcontrol.git');
 $appserver_path = $app_path . '/muxcontrol';
@@ -132,10 +141,16 @@ if (substr_count($fixed_version, '.') < 2) {
 
 shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && json -I -f package.json -e \'this.version="' . $fixed_version . '"\'');
 
+\TestPlayground\DB::query('UPDATE test_suite_run SET activity_message = "Installing app dependencies" WHERE id = ?:[id,i]', array(
+    'id' => $data['test_run_id']
+));
 shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && npm install');
 shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && bower install');
 shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && ionic setup sass');
 shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && npm rebuild node-sass');
+\TestPlayground\DB::query('UPDATE test_suite_run SET activity_message = "Compiling app assets with Gulp" WHERE id = ?:[id,i]', array(
+    'id' => $data['test_run_id']
+));
 shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && gulp sass');
 shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && gulp templatecache');
 shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && gulp bundlejs');
@@ -161,11 +176,19 @@ $server_port = $test_run_data['app_server_port'];
  *
  * Note that this server will run multiple tests simultaneously so let me know if selenium is bugging out due to port number being used / different etc. we might generate our own port #s and store them in the DB or something
  */
-shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && webdriver-manager start --detach');//Eliran place your commands all the way at the end of the string after the second "&&"
+\TestPlayground\DB::query('UPDATE test_suite_run SET activity_message = "Starting Webdriver" WHERE id = ?:[id,i]', array(
+    'id' => $data['test_run_id']
+));
+shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && nohup webdriver-manager start --detach > /dev/null 2>&1 &');
 
 $testserver_path = '/var/www/html/tests/e2e/';
+\TestPlayground\DB::query('UPDATE test_suite_run SET activity_message = "Running Tests (Protractor)" WHERE id = ?:[id,i]', array(
+    'id' => $data['test_run_id']
+));
 shell_exec('sudo -u muxlab true && cd ' . $testserver_path . ' && protractor conf.js --params.port  http://localhost:' . $test_run_data['app_server_port'] . ' --params.ipAddress ' . $mnc_instance['ip_address'] . '> ' . $testResults_path);
-
+\TestPlayground\DB::query('UPDATE test_suite_run SET activity_message = "Tests complete, generating reports" WHERE id = ?:[id,i]', array(
+    'id' => $data['test_run_id']
+));
 
 //TODO @ELIRAN and once that's done, scan each of those files for any failures in protractor (I guess if the word FAILED is there or something) and then assign it to the variable $test_run_result (enter "failed" or "success" in it)
 
@@ -183,6 +206,9 @@ else
 
 
 //stop ionic server
+\TestPlayground\DB::query('UPDATE test_suite_run SET activity_message = "Reports generated, cleaning up" WHERE id = ?:[id,i]', array(
+    'id' => $data['test_run_id']
+));
 shell_exec('sudo -u muxlab true && kill ' . $ionic_process_id);//TODO test if this works
 //delete the repo from here
 shell_exec('sudo -u muxlab true && rm -rf ' . $appserver_path);//TODO test this
@@ -190,7 +216,7 @@ if (empty($test_run_data['mnc_user_defined'])) {
     \TestPlayground\MNC::deleteMNC($mnc_instance['id']);
 }
 
-\TestPlayground\DB::query('UPDATE test_suite_run SET status = ?:[status,s] WHERE id = ?:[id,i]', array(
+\TestPlayground\DB::query('UPDATE test_suite_run SET status = ?:[status,s], activity_message = "Complete" WHERE id = ?:[id,i]', array(
     'id' => $data['test_run_id'],
     'status' => $test_run_result
 ));
