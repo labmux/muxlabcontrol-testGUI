@@ -105,7 +105,7 @@ if (!empty($test_run_data['mnc_user_defined'])) {
 
     //TODO @ELIRAN in the web interface don't let the user specify an update file when it's a user defined MNC
 }
-\TestPlayground\DB::query('UPDATE test_suite_run SET activity_message = "Setting up folders for app" WHERE id = ?:[id,i]', array(
+\TestPlayground\DB::query('UPDATE test_suite_run SET activity_message = "Setting up folders for test" WHERE id = ?:[id,i]', array(
     'id' => $data['test_run_id']
 ));
 //create a new MuxLabControl app instance for this test
@@ -122,46 +122,59 @@ if (!is_dir($test_run_path)) {
     shell_exec('sudo -u muxlab mkdir ' . $test_run_path);
 }
 
-$app_path = $test_run_path . '/app';
-if (!is_dir($app_path)) {
-    shell_exec('sudo -u muxlab mkdir ' . $app_path);
-}
-\TestPlayground\DB::query('UPDATE test_suite_run SET activity_message = "Installing app from Git" WHERE id = ?:[id,i]', array(
-    'id' => $data['test_run_id']
-));
-putenv('PATH=' . getenv('PATH') . ':/home/muxlab/.nvm/versions/node/v6.11.2/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games');
-shell_exec('sudo -u muxlab true && cd ' . $app_path . ' && git clone http://10.0.1.144:8080/git/a.abitbol/muxcontrol.git');
-$appserver_path = $app_path . '/muxcontrol';
-shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && git checkout tags/' . $test_run_data['app_version']);
 
-$fixed_version = str_replace('v', '', $test_run_data['app_version']);
-if (substr_count($fixed_version, '.') < 2) {
-    $fixed_version .= '.0';
+//check if this version of the app is installed on the server already
+$apps_root = '/var/www/html/www/apps';
+
+if (!is_dir($apps_root)) {
+    shell_exec('sudo -u muxlab mkdir ' . $apps_root);
 }
 
-shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && json -I -f package.json -e \'this.version="' . $fixed_version . '"\'');
+$app_root = $apps_root . '/' . $test_run_data['app_version'];
+$appserver_path = $app_root . '/muxcontrol';
+if (!is_dir($app_root)) {
+    \TestPlayground\DB::query('UPDATE test_suite_run SET activity_message = "Installing app from Git" WHERE id = ?:[id,i]', array(
+        'id' => $data['test_run_id']
+    ));
+    shell_exec('sudo -u muxlab mkdir ' . $app_root);
 
-\TestPlayground\DB::query('UPDATE test_suite_run SET activity_message = "Installing app dependencies" WHERE id = ?:[id,i]', array(
-    'id' => $data['test_run_id']
-));
-shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && npm install');
-shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && bower install');
-shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && ionic setup sass');
-shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && npm rebuild node-sass');
-\TestPlayground\DB::query('UPDATE test_suite_run SET activity_message = "Compiling app assets with Gulp" WHERE id = ?:[id,i]', array(
-    'id' => $data['test_run_id']
-));
-shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && gulp sass');
-shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && gulp templatecache');
-shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && gulp bundlejs');
+    putenv('PATH=' . getenv('PATH') . ':/home/muxlab/.nvm/versions/node/v6.11.2/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games');
+    shell_exec('sudo -u muxlab true && cd ' . $app_root . ' && git clone http://10.0.1.144:8080/git/a.abitbol/muxcontrol.git');
+
+    shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && git checkout tags/' . $test_run_data['app_version']);
+
+    $fixed_version = str_replace('v', '', $test_run_data['app_version']);
+    if (substr_count($fixed_version, '.') < 2) {//package.json now requires semver, so enforce it if necessary
+        $fixed_version .= '.0';
+    }
+
+    shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && json -I -f package.json -e \'this.version="' . $fixed_version . '"\'');
+
+    \TestPlayground\DB::query('UPDATE test_suite_run SET activity_message = "Installing app dependencies" WHERE id = ?:[id,i]', array(
+        'id' => $data['test_run_id']
+    ));
+    shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && npm install');
+    shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && bower install');
+    shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && ionic setup sass');
+    shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && npm rebuild node-sass');
+
+    \TestPlayground\DB::query('UPDATE test_suite_run SET activity_message = "Compiling app assets with Gulp" WHERE id = ?:[id,i]', array(
+        'id' => $data['test_run_id']
+    ));
+    shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && gulp sass');
+    //shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && gulp templatecache');
+    shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && gulp bundlejs');
+
+}
 
 
 $ionic_process_id = shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && nohup ionic serve --port=' . $test_run_data['app_server_port'] . ' > /dev/null 2>&1 & echo $!');
 $ionic_process_id = explode("\n", $ionic_process_id);
 $ionic_process_id = $ionic_process_id[1];
+sleep(3);//wait for ionic serve to fire up
 
 //we will send this file path to protractors config file
-$testResults_path = $app_path . '/results_' . $test_run_data['test_suite_id'] . '_' . $data['test_run_id'] . '_' . $test_run_data['mnc_identifier'] . '_' . $test_run_data['app_version'] . '.txt';
+$testResults_path = $test_run_path . '/results_' . $test_run_data['test_suite_id'] . '_' . $data['test_run_id'] . '_' . $test_run_data['mnc_identifier'] . '_' . $test_run_data['app_version'] . '.txt';
 $server_port = $test_run_data['app_server_port'];
 
 
@@ -183,6 +196,7 @@ $server_port = $test_run_data['app_server_port'];
 shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && nohup webdriver-manager start --detach > /dev/null 2>&1 &');
 NOTE it seems that protractor will only work if webdriver-manager is started from manually (and not from ssh). For some reason, calling it this way is causing ChromeDriver issues (chrome exiting unexpectedly)
 */
+
 
 $testserver_path = '/var/www/html/tests/e2e/';
 \TestPlayground\DB::query('UPDATE test_suite_run SET activity_message = "Running Tests (Protractor)" WHERE id = ?:[id,i]', array(
@@ -210,12 +224,12 @@ exports.config = {
         }},
     jasmineNodeOpts: {
 		showColors: true,
-        defaultTimeoutInterval: 30000
+        defaultTimeoutInterval: 10000
 	},
     onPrepare: function () {
         jasmine.getEnv().addReporter(
             new HtmlReporter({
-                baseDirectory: '$app_path/beautiful-report'
+                baseDirectory: '$test_run_path/beautiful-report'
         }).getJasmine2Reporter());
     },
     //Choose which spec file to read
@@ -229,12 +243,8 @@ exports.config = {
 };
 CONFIGJS;
 
-try {
-    file_put_contents($app_path . '/conf.js', $protractor_configjs_content);
-    shell_exec('sudo -u muxlab true && cd ' . $app_path . ' && protractor conf.js > ' . $testResults_path);
-} catch (\Exception $e) {
-
-}
+file_put_contents($test_run_path . '/conf.js', $protractor_configjs_content);
+shell_exec('sudo -u muxlab true && cd ' . $test_run_path . ' && protractor conf.js > ' . $testResults_path);
 
 \TestPlayground\DB::query('UPDATE test_suite_run SET activity_message = "Tests complete, generating reports" WHERE id = ?:[id,i]', array(
     'id' => $data['test_run_id']
@@ -256,12 +266,19 @@ if (strpos($file, 'failed') === false) {
 \TestPlayground\DB::query('UPDATE test_suite_run SET activity_message = "Reports generated, cleaning up" WHERE id = ?:[id,i]', array(
     'id' => $data['test_run_id']
 ));
-shell_exec('sudo -u muxlab true && kill ' . $ionic_process_id);//TODO test if this works
-//delete the repo from here
-shell_exec('sudo -u muxlab true && rm -rf ' . $appserver_path);//TODO test this
-if (empty($test_run_data['mnc_user_defined'])) {
-    \TestPlayground\MNC::deleteMNC($mnc_instance['id']);
+try {
+    shell_exec('sudo -u muxlab true && kill ' . $ionic_process_id);//TODO test if this works
+} catch (\Exception $e) {
+
 }
+try {
+    if (empty($test_run_data['mnc_user_defined'])) {
+        \TestPlayground\MNC::deleteMNC($mnc_instance['id']);
+    }
+} catch (\Exception $e) {
+
+}
+
 
 \TestPlayground\DB::query('UPDATE test_suite_run SET status = ?:[status,s], activity_message = "Complete" WHERE id = ?:[id,i]', array(
     'id' => $data['test_run_id'],

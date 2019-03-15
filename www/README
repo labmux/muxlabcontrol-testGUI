@@ -34,6 +34,9 @@ make sure to first install a few things:
 - MySQL (install the base.sql DB in there and configure api/DB.php with the right MySQL credentials)
 
 then run
+npm install -g ionic
+npm install -g @ionic/v1-toolkit
+npm install -g protractor-beautiful-reporter
 npm install -g protractor
 webdriver-manager update
 webdriver-manager start (and leave this terminal window open. Also this command seems to give problems down the line when run over SSH)

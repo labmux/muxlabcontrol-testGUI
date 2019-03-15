@@ -17,7 +17,7 @@ class TestSuite {
             ));
             foreach ($suites[$i]['test_suite_runs'] as &$run) {
                 $run['beautiful_report_link'] = false;
-                $test_run_path = '/test-runs/test-suite_' . $suites[$i]['id'] . '/test-run_' . $run['id'] . '/app/beautiful-report/report.html';
+                $test_run_path = '/test-runs/test-suite_' . $suites[$i]['id'] . '/test-run_' . $run['id'] . '/beautiful-report/report.html';
                 if (file_exists('/var/www/html/www' . $test_run_path)) {
                     $run['beautiful_report_link'] = $test_run_path;
                 }

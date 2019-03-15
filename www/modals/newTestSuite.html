@@ -6,23 +6,31 @@
     <label for="name">Test Suite Name:</label>
     <input type="text" ng-model="testsuite_name" id="name"><br>
 
-    <!-- MNC Versions checkboxes -->
-    <label>MNC Versions</label>
-    <div class="list-group">
-        <div ng-repeat="version in availableMncVersions track by $index">
-            <input type="checkbox" ng-click="$ctrl.toggleSelectedMncVersion(version)" id="mncVersion-{{$index}}">
-            <label class="list-group-item" for="mncVersion-{{$index}}">{{version}}</label>
+    <br />
+    <div style="float:left;min-width:200px;width:45%">
+        <!-- MNC Versions checkboxes -->
+        <h5 style="text-align:center">MNC Versions</h5>
+        <div class="list-group">
+            <div ng-repeat="version in availableMncVersions track by $index">
+                <input type="checkbox" ng-click="$ctrl.toggleSelectedMncVersion(version)" id="mncVersion-{{$index}}">
+                <label class="list-group-item" for="mncVersion-{{$index}}">{{version}}</label>
+            </div>
         </div>
     </div>
 
-    <!-- App Versions checkboxes -->
-    <label>App Versions</label>
-    <div class="list-group">
-        <div ng-repeat="version in availableAppVersions track by $index">
-            <input type="checkbox" ng-click="$ctrl.toggleSelectedAppVersion(version)" id="appVersion-{{$index}}">
-            <label class="list-group-item" for="appVersion-{{$index}}">{{version}}</label>
+
+    <div style="float:left;min-width:200px; width:45%;margin-left:10%;">
+        <!-- App Versions checkboxes -->
+        <h5 style="text-align:center">App Versions</h5>
+        <div class="list-group">
+            <div ng-repeat="version in availableAppVersions track by $index">
+                <input type="checkbox" ng-click="$ctrl.toggleSelectedAppVersion(version)" id="appVersion-{{$index}}">
+                <label class="list-group-item" for="appVersion-{{$index}}">{{version}}</label>
+            </div>
         </div>
     </div>
+
+    <div style="clear:both;"></div>
 </div>
 
 <div class="modal-footer">
