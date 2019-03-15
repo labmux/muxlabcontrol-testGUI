@@ -176,10 +176,13 @@ $server_port = $test_run_data['app_server_port'];
  *
  * Note that this server will run multiple tests simultaneously so let me know if selenium is bugging out due to port number being used / different etc. we might generate our own port #s and store them in the DB or something
  */
+/*
 \TestPlayground\DB::query('UPDATE test_suite_run SET activity_message = "Starting Webdriver" WHERE id = ?:[id,i]', array(
     'id' => $data['test_run_id']
 ));
 shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && nohup webdriver-manager start --detach > /dev/null 2>&1 &');
+NOTE it seems that protractor will only work if webdriver-manager is started from manually (and not from ssh). For some reason, calling it this way is causing ChromeDriver issues (chrome exiting unexpectedly)
+*/
 
 $testserver_path = '/var/www/html/tests/e2e/';
 \TestPlayground\DB::query('UPDATE test_suite_run SET activity_message = "Running Tests (Protractor)" WHERE id = ?:[id,i]', array(
