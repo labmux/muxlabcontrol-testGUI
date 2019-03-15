@@ -160,7 +160,6 @@ $ionic_process_id = shell_exec('sudo -u muxlab true && cd ' . $appserver_path . 
 $ionic_process_id = explode("\n", $ionic_process_id);
 $ionic_process_id = $ionic_process_id[1];
 
-//TODO @ELIRAN if you can save the results of the protractor run to a file under $app_path/results_{test_suite_ID}_{test_run_id}_{mnc_version}_{app_version}.txt
 //we will send this file path to protractors config file
 $testResults_path = $app_path . '/results_' . $test_run_data['test_suite_id'] . '_' . $data['test_run_id'] . '_' . $test_run_data['mnc_identifier'] . '_' . $test_run_data['app_version'] . '.txt';
 $server_port = $test_run_data['app_server_port'];
@@ -176,6 +175,7 @@ $server_port = $test_run_data['app_server_port'];
  *
  * Note that this server will run multiple tests simultaneously so let me know if selenium is bugging out due to port number being used / different etc. we might generate our own port #s and store them in the DB or something
  */
+
 /*
 \TestPlayground\DB::query('UPDATE test_suite_run SET activity_message = "Starting Webdriver" WHERE id = ?:[id,i]', array(
     'id' => $data['test_run_id']
@@ -188,23 +188,67 @@ $testserver_path = '/var/www/html/tests/e2e/';
 \TestPlayground\DB::query('UPDATE test_suite_run SET activity_message = "Running Tests (Protractor)" WHERE id = ?:[id,i]', array(
     'id' => $data['test_run_id']
 ));
-shell_exec('sudo -u muxlab true && cd ' . $testserver_path . ' && protractor conf.js --params.port  http://localhost:' . $test_run_data['app_server_port'] . ' --params.ipAddress ' . $mnc_instance['ip_address'] . '> ' . $testResults_path);
+
+//EDIT ariel:
+//create a config.js file specific to this test, instead of messing around with conf.js which is not easily made dynamic
+$protractor_spec_filepath = '/var/www/html/tests/e2e';//where the protractor e2e tests are
+
+$protractor_configjs_content = <<<CONFIGJS
+var HtmlReporter = require('protractor-beautiful-reporter');
+
+exports.config = {
+    params: {
+        ipAddress: "{$mnc_instance['ip_address']}",
+        port: "http://localhost:{$test_run_data['app_server_port']}/",
+        username: 'admin',
+        password: 'admin',
+    },
+    files: [{pattern: '$protractor_spec_filepath/*.js', included: true}],
+    seleniumAddress: 'http://localhost:4444/wd/hub',
+    capabilities: {browserName: 'chrome','chromeOptions': {
+            'args': ['no-sandbox']
+        }},
+    jasmineNodeOpts: {
+		showColors: true,
+        defaultTimeoutInterval: 30000
+	},
+    onPrepare: function () {
+        jasmine.getEnv().addReporter(
+            new HtmlReporter({
+                baseDirectory: '$app_path/beautiful-report'
+        }).getJasmine2Reporter());
+    },
+    //Choose which spec file to read
+    specs:
+        [
+            '$protractor_spec_filepath/presentation.js'
+            // '$protractor_spec_filepath/login-spec.js'
+            // '$protractor_spec_filepath/devices-spec.js',
+            //'$protractor_spec_filepath/locations-spec.js'
+        ]
+};
+CONFIGJS;
+
+try {
+    file_put_contents($app_path . '/conf.js', $protractor_configjs_content);
+    shell_exec('sudo -u muxlab true && cd ' . $app_path . ' && protractor conf.js > ' . $testResults_path);
+} catch (\Exception $e) {
+
+}
+
 \TestPlayground\DB::query('UPDATE test_suite_run SET activity_message = "Tests complete, generating reports" WHERE id = ?:[id,i]', array(
     'id' => $data['test_run_id']
 ));
-
-//TODO @ELIRAN and once that's done, scan each of those files for any failures in protractor (I guess if the word FAILED is there or something) and then assign it to the variable $test_run_result (enter "failed" or "success" in it)
 
 //scan test results for failure
 
 $file = file_get_contents($testResults_path);
 
-
-if (strpos($file, 'failed') === false)
+if (strpos($file, 'failed') === false) {
     $test_run_result = 'success';
-else
+} else {
     $test_run_result = 'failed';
-
+}
 
 
 
@@ -232,7 +276,5 @@ if (sizeof($all_test_runs) === 0) {//test suite has all its child processes fini
     \TestPlayground\DB::query('UPDATE test_suite SET status = "done" WHERE id = ?:[id,i]', array(
         'id' => $test_run_data['test_suite_id']
     ));
-    //TODO since all tests are done, zip all the results into a downloadable file
 }
-?>
 

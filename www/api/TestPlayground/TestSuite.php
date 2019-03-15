@@ -15,6 +15,13 @@ class TestSuite {
             $suites[$i]['test_suite_runs'] = DB::query('SELECT * FROM test_suite_run WHERE test_suite_id = ?:[suite_id,i]', array(
                 'suite_id' => $suites[$i]['id']
             ));
+            foreach ($suites[$i]['test_suite_runs'] as &$run) {
+                $run['beautiful_report_link'] = false;
+                $test_run_path = '/test-runs/test-suite_' . $suites[$i]['id'] . '/test-run_' . $run['id'] . '/app/beautiful-report/report.html';
+                if (file_exists('/var/www/html/www' . $test_run_path)) {
+                    $run['beautiful_report_link'] = $test_run_path;
+                }
+            }
         }
 
         return (!empty($suites) ? $suites : array());

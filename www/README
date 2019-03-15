@@ -40,3 +40,9 @@ webdriver-manager start (and leave this terminal window open. Also this command 
 
 and finally from the directory of this project (where you have package.json) run
 npm install
+
+
+When e2e tests are updated, manually FTP them over to the server, at /var/www/html/tests/e2e
+
+
+Any changes to protractor conf.js should be done in do_test.php which overrides this file
