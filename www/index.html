@@ -175,29 +175,60 @@
         <!-- Test Suite Table-->
         <h1 class="display-2 text-center">MuxLabControl Test Suites</h1>
         <table class="table table-hover table-bordered">
-            <tr class="table-he">
-                <th>Name</th>
-                <th>MNC Versions</th>
-                <th>App Versions</th>
-                <th>Time Created</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-            <tr ng-repeat="testsuite in testsuites">
-                <td>{{testsuite.name}}</td>
-                <td><div ng-repeat="mncVersion in testsuite.mnc_versions track by $index">{{ mncVersion.identifier }}</div></td>
-                <td><div ng-repeat="appVersion in testsuite.app_versions track by $index">{{ appVersion }}</div></td>
-                <td>{{ testsuite.timestamp_created }}</td>
-                <td>&nbsp;&nbsp;&nbsp;&nbsp;<span ng-class="{red:testsuite.status == 'stopped', green:testsuite.status == 'done' || testsuite.status == 'started','glyphicon glyphicon-refresh glyphicon-refresh-animate':testsuite.status == 'pending' || testsuite.status == 'in_progress' || testsuite.status == ''}"></span></td>
-                <td class="input-group">
-                    <div class="">
-                        <label class="btn btn-default">
-                            Choose file <input type="file" hidden>
-                        </label>
-                        <button class="btn btn-danger" ng-click="$ctrl.deleteTestSuite(testsuite.id)"><span class="glyphicon glyphicon-trash"></span></button>
-                    </div>
-                </td>
-            </tr>
+            <thead>
+                <tr class="table-he">
+                    <th>Name</th>
+                    <th>MNC Versions</th>
+                    <th>App Versions</th>
+                    <th>Time Created</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody >
+                <tr ng-repeat-start="testsuite in testsuites track by testsuite.id" class="" data-toggle="collapse" data-target="#more-info-{{testsuite.id}}">
+                    <td>{{testsuite.name}}</td>
+                    <td><div ng-repeat="mncVersion in testsuite.mnc_versions track by $index">{{ mncVersion.identifier }}</div></td>
+                    <td><div ng-repeat="appVersion in testsuite.app_versions track by $index">{{ appVersion }}</div></td>
+                    <td>{{ testsuite.timestamp_created }}</td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;<span ng-class="{red:testsuite.status == 'stopped', green:testsuite.status == 'done' || testsuite.status == 'started','glyphicon glyphicon-refresh glyphicon-refresh-animate':testsuite.status == 'pending' || testsuite.status == 'in_progress' || testsuite.status == ''}"></span></td>
+                    <td class="">
+                        <div class="">
+                            <label class="btn btn-default">
+                                Choose file <input type="file" hidden>
+                            </label>
+                            <button class="btn btn-danger" ng-click="$ctrl.deleteTestSuite(testsuite.id)"><span class="glyphicon glyphicon-trash"></span></button>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="collapse" ng-repeat-end="" ng-attr-id="more-info-{{testsuite.id}}">
+                    <td colspan="6" id="more-info" style="width: 100%;padding: 20px">
+                        <table class="table" style="width: 100%">
+                            <thead>
+                                <th>App Version</th>
+                                <th>MNC Identifier</th>
+                                <th>Activity Message</th>
+                                <th>Status</th>
+                                <th>Date Created</th>
+                                <th>Test Report</th>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="testruns in testsuite.test_suite_runs">
+                                <td>{{ testruns.app_version }}</td>
+                                <td>{{ testruns.mnc_identifier }}</td>
+                                <td>{{ testruns.activity_message }}</td>
+                                <td>{{ testruns.status }}</td>
+                                <td>{{ testruns.date_created}}</td>
+                                <td><button class="btn btn-default"><a href="../tests/e2e/tmp/screenshots/report.html" target="_blank" class="glyphicon glyphicon-globe"></a></button></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+
+
+
         </table>
     </main>
 
