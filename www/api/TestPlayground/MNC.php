@@ -41,7 +41,7 @@ class MNC {
 
         foreach ($raw_versions as $raw_version) {
             $raw_version = explode('=', $raw_version);
-            if (strpos($raw_version[0], 'SnapshotName') !== false) {
+            if (strpos($raw_version[0], 'SnapshotName') === 0) {
                 $raw_version = str_replace('"', '', $raw_version[1]);
                 $availableVersions[] = $raw_version;
             }

@@ -130,6 +130,8 @@ if (!is_dir($apps_root)) {
     shell_exec('sudo -u muxlab mkdir ' . $apps_root);
 }
 
+putenv('PATH=' . getenv('PATH') . ':/home/muxlab/.nvm/versions/node/v6.11.2/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games');
+
 $app_root = $apps_root . '/' . $test_run_data['app_version'];
 $appserver_path = $app_root . '/muxcontrol';
 if (!is_dir($app_root)) {
@@ -138,7 +140,6 @@ if (!is_dir($app_root)) {
     ));
     shell_exec('sudo -u muxlab mkdir ' . $app_root);
 
-    putenv('PATH=' . getenv('PATH') . ':/home/muxlab/.nvm/versions/node/v6.11.2/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games');
     shell_exec('sudo -u muxlab true && cd ' . $app_root . ' && git clone http://10.0.1.144:8080/git/a.abitbol/muxcontrol.git');
 
     shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && git checkout tags/' . $test_run_data['app_version']);
@@ -243,8 +244,10 @@ exports.config = {
 };
 CONFIGJS;
 
+
 file_put_contents($test_run_path . '/conf.js', $protractor_configjs_content);
-shell_exec('sudo -u muxlab true && cd ' . $test_run_path . ' && protractor conf.js > ' . $testResults_path);
+sleep(1);
+shell_exec('sudo -u muxlab true && protractor ' . $test_run_path . '/conf.js > ' . $testResults_path);
 
 \TestPlayground\DB::query('UPDATE test_suite_run SET activity_message = "Tests complete, generating reports" WHERE id = ?:[id,i]', array(
     'id' => $data['test_run_id']
