@@ -36,9 +36,9 @@ app.controller('HomeCtrl', function ($scope, $uibModal, TestServerAPIService, $i
 
     $ctrl.refreshPage();
 
-    // $interval(function () {
-    //     $ctrl.refreshPage();
-    // }, 10000);
+    $interval(function () {
+        $ctrl.refreshPage();
+    }, 1000);
 
     $ctrl.createNewVirtualMncModal = function () {
         let modalInstance = $uibModal.open({

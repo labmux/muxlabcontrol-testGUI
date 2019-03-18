@@ -7,17 +7,17 @@ var LoginPage = function () {
      * Logs user in from the ip address login screen
      */
     this.ip_login = function (ip) {
-        var ipaddress = element(by.model('version.mnc_ip'));
-        var save_btn = element(by.name('btn_save'));
+        var ipaddress = element(by.model('mnc.mnc_ip'));
+        var save_btn = element(by.css('.mnc-ip-view  .button-pill-filled'));
 
         //clear inputs
-        browser.wait(EC.elementToBeClickable(ipaddress), 2000);
+        browser.wait(EC.elementToBeClickable(ipaddress), 7000);
         ipaddress.clear();
 
         //insert input
         ipaddress.sendKeys(ip);
 
-        browser.wait(EC.elementToBeClickable(save_btn), 2000);
+        browser.wait(EC.elementToBeClickable(save_btn), 7000);
         save_btn.click();
     };
 

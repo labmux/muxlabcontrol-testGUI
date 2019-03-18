@@ -33,7 +33,7 @@ describe('Tab changes', function () {
         LoginPage.login();
         LoginPage.goToDevices();
 
-        element(by.css("panel1-content ion-list ion-item")).click();
+        element(by.css("panel1-content ion-list ion-item:nth-child(6)")).click();
         element(by.css("div ion-content ul li:nth-child(1)")).click();
 
         var e = element(by.css('div ion-content ul li:nth-child(1) i'));

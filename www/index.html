@@ -161,7 +161,7 @@
                 <td>{{ mnc.ip_address }}</td>
                 <td>{{ mnc.timestamp_created }}</td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;<span ng-class="{red:mnc.status == 'stopped', green:mnc.status == 'ready' || mnc.status == 'started','glyphicon glyphicon-refresh glyphicon-refresh-animate':mnc.status == 'uninstantiated'}"></span></td>
-                <td class="input-group">
+                <td>
                     <div class="input-group-btn">
                         <button class="btn btn-default" ng-if="mnc.status == 'stopped'" ng-click="$ctrl.startMNC(mnc.id)"><span class="glyphicon glyphicon-play"></span></button>
                         <button class="btn btn-default" ng-if="mnc.status == 'started' || mnc.status == 'ready'" ng-click="$ctrl.stopMNC(mnc.id)"><span class="glyphicon glyphicon-stop"></span></button>
@@ -174,9 +174,9 @@
 
         <!-- Test Suite Table-->
         <h1 class="display-2 text-center">MuxLabControl Test Suites</h1>
-        <table class="table table-hover table-bordered">
+        <table class="table table-hover table-bordered" style="border: 0px;">
             <thead>
-                <tr class="table-he">
+                <tr class="">
                     <th>Name</th>
                     <th>MNC Versions</th>
                     <th>App Versions</th>
@@ -185,7 +185,7 @@
                     <th>Actions</th>
                 </tr>
             </thead>
-            <tbody >
+            <tbody>
                 <tr ng-repeat-start="testsuite in testsuites track by testsuite.id" class="" data-toggle="collapse" data-target="#more-info-{{testsuite.id}}">
                     <td>{{testsuite.name}}</td>
                     <td><div ng-repeat="mncVersion in testsuite.mnc_versions track by $index">{{ mncVersion.identifier }}</div></td>
@@ -201,12 +201,12 @@
                         </div>
                     </td>
                 </tr>
-                <tr class="collapse" ng-repeat-end="" ng-attr-id="more-info-{{testsuite.id}}">
-                    <td colspan="6" id="more-info" style="width: 100%;padding: 20px">
-                        <table class="table" style="width: 100%">
+                <tr class="collapse" ng-repeat-end="" ng-attr-id="more-info-{{testsuite.id}}"  style="border: 0px;background-color: #f5f5f5">
+                    <td colspan="6" id="more-info" style="width: 100%;padding: 20px 30px 30px 30px; border: 0px;">
+                        <table class="table table-bordered" style="width: 100%">
                             <thead>
-                                <th>App Version</th>
                                 <th>MNC Identifier</th>
+                                <th>App Version</th>
                                 <th>Activity Message</th>
                                 <th>Status</th>
                                 <th>Date Created</th>
@@ -214,12 +214,12 @@
                             </thead>
                             <tbody>
                             <tr ng-repeat="testruns in testsuite.test_suite_runs">
-                                <td>{{ testruns.app_version }}</td>
                                 <td>{{ testruns.mnc_identifier }}</td>
+                                <td>{{ testruns.app_version }}</td>
                                 <td>{{ testruns.activity_message }}</td>
                                 <td>{{ testruns.status }}</td>
                                 <td>{{ testruns.date_created}}</td>
-                                <td><button class="btn btn-default"><a href="../tests/e2e/tmp/screenshots/report.html" target="_blank" class="glyphicon glyphicon-globe"></a></button></td>
+                                <td ng-if="testruns.beautiful_report_link"><a href="./{{testruns.beautiful_report_link}}" target="_blank" class="glyphicon glyphicon-globe"></a></td>
                             </tr>
                             </tbody>
                         </table>
