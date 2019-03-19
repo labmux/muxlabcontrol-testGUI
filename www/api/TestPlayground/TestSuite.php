@@ -165,8 +165,10 @@ class TestSuite {
 
     public static function deleteTestSuite($test_suite_id) {
         $test_suite_id = intval($test_suite_id);
-        if (is_dir('/var/www/html/www/test-runs/test-suite_' . $test_suite_id)) {
-            shell_exec('sudo rm -rf /var/www/html/www/test-runs/test-suite_' . $test_suite_id);//TODO test this
+        $path = '/var/www/html/www/test-runs/test-suite_' . $test_suite_id;
+        if (is_dir($path)) {
+            exec('sudo -u muxlab chmod -R 777 ' . $path);
+            shell_exec('sudo -u muxlab rm -rf ' . $path);
         }
         
         DB::query('DELETE FROM test_suite_run WHERE test_suite_id = ?:[test_suite_id,i]', array(
