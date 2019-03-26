@@ -4,7 +4,7 @@ exports.config = {
     params: {
         //ip: '192.168.168.250',
         //ip:'muxlablab.ngrok.io',
-        ipAddress: "192.168.168.50",
+        ipAddress: "192.168.168.85",
         port: "http://localhost:8100/",
         username: 'admin',
         password: 'admin',

@@ -5,14 +5,14 @@ var LocationsPage = function () {
      * @returns {*}
      */
     this.getMoreOptionsBtn = function () {
-        var moreOptions = element(by.name("locations_moreOptions"));
+        var moreOptions = element(by.css('[ng-click="showLocationOptions($event, location)"]'));
         return moreOptions;
     };
 
     this.addLocation = function(location_name) {
         var addLocation = element(by.className("icon-brandify-plus-outlined"));
         var name = element(by.model("addLocationData.name"));
-        var create_btn = element(by.name("btn_create"));
+        var create_btn = element(by.css('[ng-click="addLocation(addLocationData)"]'));
 
         addLocation.click();
         name.sendKeys(location_name);
@@ -47,8 +47,8 @@ var LocationsPage = function () {
      * Deletes first location on the list
      */
     this.delete = function() {
-        var delete_btn = element(by.name("locations_delete"));
-        var confirmDelete_btn = element(by.className("locations-confirmDelete"));
+        var delete_btn = element(by.css('[ng-click="deleteLocation(currentPopoverLocation)"]'));
+        var confirmDelete_btn = element(by.cssContainingText('.button-positive', 'Delete'));
         var moreOptions = this.getMoreOptionsBtn();
 
         moreOptions.click();

@@ -48,7 +48,7 @@ describe('Tab changes', function () {
         element(by.css("div ion-content ul li:nth-child(2)")).click();
 
         var e = element(by.css('div ion-content ul li:nth-child(2) i'));
-        expect(e.isDisplayed()).toBe(false);
+        expect(e.isDisplayed()).toBe(true);
     });
 
     //
@@ -69,28 +69,29 @@ describe('Tab changes', function () {
     //     expect(browser.getCurrentUrl()).toContain('/devices');
     // });
     //
-    // it('should add location', function () {
-    //
-    //     LoginPage.login();
-    //     LoginPage.goToLocations();
-    //
-    //     var locationlength_before;
-    //     var locationlength_after;
-    //
-    //     //get length before adding location
-    //     element.all(by.repeater('location in locations')).count().then(function (loc) {
-    //         locationlength_before = loc;
-    //     });
-    //
-    //     LocationsPage.addLocation("AUTOMATED TEST");
-    //
-    //     //get length after having added location
-    //     element.all(by.repeater('location in locations')).count().then(function (loc) {
-    //         locationlength_after = loc;
-    //
-    //         expect((locationlength_after > locationlength_before)).toBe(true);
-    //     });
-    // });
+    it('should add location', function () {
+
+        LoginPage.ip_login(ip);
+        LoginPage.login();
+        LoginPage.goToLocations();
+
+        var locationlength_before;
+        var locationlength_after;
+
+        //get length before adding location
+        element.all(by.repeater('location in locations')).count().then(function (loc) {
+            locationlength_before = loc;
+        });
+
+        LocationsPage.addLocation("AUTOMATED TEST");
+
+        //get length after having added location
+        element.all(by.repeater('location in locations')).count().then(function (loc) {
+            locationlength_after = loc;
+
+            expect((locationlength_after > locationlength_before)).toBe(true);
+        });
+    });
     //
     // it('should add sublocation', function () {
     //     LoginPage.login();
@@ -104,26 +105,26 @@ describe('Tab changes', function () {
     //     });
     // });
     //
-    // it('should delete location', function () {
-    //     LoginPage.login();
-    //     LoginPage.goToLocations();
-    //
-    //     var locationlength_before;
-    //     var locationlength_after;
-    //
-    //     //get length before deleting location
-    //     element.all(by.repeater('location in locations')).count().then(function (loc) {
-    //         locationlength_before = loc;
-    //     });
-    //
-    //     LocationsPage.delete();
-    //
-    //     //get length after deleting location
-    //     element.all(by.repeater('location in locations')).count().then(function (loc) {
-    //         locationlength_after = loc;
-    //
-    //         expect((locationlength_before > locationlength_after)).toBe(true);
-    //     });
-    // });
+    it('should delete location', function () {
+        LoginPage.login();
+        LoginPage.goToLocations();
+
+        var locationlength_before;
+        var locationlength_after;
+
+        //get length before deleting location
+        element.all(by.repeater('location in locations')).count().then(function (loc) {
+            locationlength_before = loc;
+        });
+
+        LocationsPage.delete();
+
+        //get length after deleting location
+        element.all(by.repeater('location in locations')).count().then(function (loc) {
+            locationlength_after = loc;
+
+            expect((locationlength_before > locationlength_after)).toBe(true);
+        });
+    });
 
 });
