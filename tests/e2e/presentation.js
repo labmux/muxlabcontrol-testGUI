@@ -28,6 +28,7 @@ describe('Tab changes', function () {
 
     });
 
+
     it('should choose first device', function () {
         LoginPage.ip_login(ip);
         LoginPage.login();
@@ -51,8 +52,8 @@ describe('Tab changes', function () {
         expect(e.isDisplayed()).toBe(true);
     });
 
-    //
-    // it('should click "Devices" and go there', function () {
+
+    // it('should click on different tabs', function () {
     //     LoginPage.ip_login(ip);
     //     LoginPage.login();
     //
@@ -71,7 +72,6 @@ describe('Tab changes', function () {
     //
     it('should add location', function () {
 
-        LoginPage.ip_login(ip);
         LoginPage.login();
         LoginPage.goToLocations();
 
@@ -92,19 +92,7 @@ describe('Tab changes', function () {
             expect((locationlength_after > locationlength_before)).toBe(true);
         });
     });
-    //
-    // it('should add sublocation', function () {
-    //     LoginPage.login();
-    //     LoginPage.goToLocations();
-    //
-    //     LocationsPage.addSubLocation("AUTOMATED TEST SUBLOCATION");
-    //     LocationsPage.next();
-    //
-    //     element.all(by.repeater('location in locations')).count().then(function (loc) {
-    //         expect(loc != 0).toBe(true);
-    //     });
-    // });
-    //
+
     it('should delete location', function () {
         LoginPage.login();
         LoginPage.goToLocations();

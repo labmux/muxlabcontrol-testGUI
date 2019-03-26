@@ -25,7 +25,8 @@ exports.config = {
     //Choose which spec file to read
     specs:
         [
-            'presentation.js'
+            'deviceMnc-spec.js',
+            // 'presentation.js'
             // 'login-spec.js'
             // 'devices-spec.js',
             //'locations-spec.js'
