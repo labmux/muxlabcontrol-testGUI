@@ -202,7 +202,7 @@ iface lo inet loopback
         $available_ip .= $node;
         return $available_ip;
     }
-
+    
     public static function startMNC($box_id) {
         $box_id = intval($box_id);
 
@@ -278,6 +278,25 @@ iface lo inet loopback
         }
         return true;
     }
+
+    private static function isMNCBooted($ip) {
+        $is_booted = true;
+
+        try {
+            $ssh = new \phpseclib\Net\SSH2($ip);
+            if (!$ssh->login('root', '111111')) {
+                $is_booted = false;
+            }
+            @$ssh->disconnect();
+        } catch (\Exception $e) {
+            $is_booted = false;
+        }
+
+        return $is_booted;
+
+    }
+
+    /*
     private static function isMNCBooted($ip) {
         $url='http://' . $ip . '/mnc';
 
@@ -294,5 +313,5 @@ iface lo inet loopback
         } else {
             return false;
         }
-    }
+    }*/
 }
