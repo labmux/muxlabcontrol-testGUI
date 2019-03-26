@@ -1,7 +1,7 @@
 <?php
 //Copyright 2017 MuxLab. All rights reserved.
 
-session_start();
+//session_start();
 
 require '../../vendor/autoload.php';
 use Slim\Http\UploadedFile;

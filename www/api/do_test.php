@@ -208,8 +208,15 @@ $testserver_path = '/var/www/html/tests/e2e/';
 //create a config.js file specific to this test, instead of messing around with conf.js which is not easily made dynamic
 $protractor_spec_filepath = '/var/www/html/tests/e2e';//where the protractor e2e tests are
 
+shell_exec('sudo -u muxlab mkdir ' . $test_run_path . '/beautiful-report');
+
 $protractor_configjs_content = <<<CONFIGJS
+
 var HtmlReporter = require('protractor-beautiful-reporter');
+
+var reporter = new HtmlReporter({
+   baseDirectory: '$test_run_path/beautiful-report'
+});
 
 exports.config = {
     params: {
@@ -229,9 +236,7 @@ exports.config = {
 	},
     onPrepare: function () {
         jasmine.getEnv().addReporter(
-            new HtmlReporter({
-                baseDirectory: '$test_run_path/beautiful-report'
-        }).getJasmine2Reporter());
+            reporter.getJasmine2Reporter());
     },
     //Choose which spec file to read
     specs:

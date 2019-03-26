@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html >
+<head>
+    <title>Muxlab Control Tests</title>
+
+    <!-- Bootstrap css -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!-- Angular -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.min.js"></script>
+
+    <!-- Bootsrtap JS -->
+    <script src="css/ui-bootstrap-tpls-2.5.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap.js">
+
+    <!-- JS files -->
+    <script src="app.js"></script>
+    <script src="js/bootstrapmodal.js"></script>
+
+    <style>
+        /**
+            MNC Table status
+        */
+        .red {
+            height: 15px;
+            width: 15px;
+            background-color: red;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .green {
+            height: 15px;
+            width: 15px;
+            background-color: green;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .glyphicon-refresh-animate {
+            -animation: spin .7s infinite linear;
+            -webkit-animation: spin2 .7s infinite linear;
+        }
+
+        @-webkit-keyframes spin2 {
+            from { -webkit-transform: rotate(0deg);}
+            to { -webkit-transform: rotate(360deg);}
+        }
+
+        @keyframes spin {
+            from { transform: scale(1) rotate(0deg);}
+            to { transform: scale(1) rotate(360deg);}
+        }
+
+        /**
+           Test Suites Modal
+         */
+        .list-group input[type="checkbox"] {
+            display: none;
+        }
+
+        .list-group input[type="checkbox"] + .list-group-item {
+            cursor: pointer;
+        }
+
+        .list-group input[type="checkbox"] + .list-group-item:before {
+            content: "\2713";
+            color: transparent;
+            font-weight: bold;
+            margin-right: 1em;
+        }
+
+        .list-group input[type="checkbox"]:checked + .list-group-item {
+            background-color: #0275D8;
+            color: #FFF;
+        }
+
+        .list-group input[type="checkbox"]:checked + .list-group-item:before {
+            color: inherit;
+        }
+
+        [hidden] {
+            display: none !important;
+        }
+        header.jumbotron {
+            position: relative;
+            background-color: transparent;
+        }
+        header.jumbotron:after {
+            content: '';
+            opacity:0.1;
+            background-image: url('img/bg.png');
+            background-position: top center;
+            top:0;
+            left:0;
+            bottom:0;
+            right:0;
+            position: absolute;
+            z-index: -1;
+        }
+    </style>
+</head>
+
+<body ng-app="uiBootstrap">
+
+
+<div ng-controller="HomeCtrl as $ctrl">
+
+    <header class="jumbotron">
+        <h1 class="display-2 text-center">Troubleshooting</h1>
+
+    </header>
+
+    <main class="container">
+        <p>
+            If tests are running properly, please ask the server administrator to look into it.
+        </p>
+        <br />
+        <h5>Restart Webdriver</h5>
+        <p>
+            Kill the webdriver-manager server:
+            <code>kill $(ps -ef | grep webdriver | grep -v grep | awk '{ print $2 }')</code>
+            And restart it locally - meaning from the terminal on the machine. Don't use SSH. Leave the terminal window open, or add --detach after the command.
+            <code>webdriver-manager start</code>
+        </p>
+
+        <br />
+        <h5>Kill Ionic processes</h5>
+        <p>
+            Kill lingering ionic processes that might be interfering:
+            <code>kill $(ps -ef | grep ionic | grep -v grep | awk '{ print $2 }')</code>
+            No need to restart the command. do_test.php manages that automatically.
+        </p>
+
+        <br />
+        <h5>Hogged MNC default IP</h5>
+        <p>
+            The default MNC IP (192.168.168.50) might be busy and so spawning new MNCs won't be possible due to IP clashes.
+            Kill all MNC virtual machines if you don't know which one is hogging the IP.
+            <code>vboxmanage list runningvms</code>
+            DO NOT kill the primary vbox since it contains all the snapshots used for spawning new MNCs.
+            <code>VBoxManage controlvm VMNAME poweroff</code>
+            <code>VBoxManage unregistervm VMNAME --delete</code>
+        </p>
+    </main>
+
+</div>
+
+
+
+</body>
+</html>
