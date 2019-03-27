@@ -156,7 +156,7 @@ if (!is_dir($app_root)) {
     ));
     shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && npm install');
     shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && bower install');
-    shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && ionic setup sass');
+    //shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && ionic setup sass');
     shell_exec('sudo -u muxlab true && cd ' . $appserver_path . ' && npm rebuild node-sass');
 
     \TestPlayground\DB::query('UPDATE test_suite_run SET activity_message = "Compiling app assets with Gulp" WHERE id = ?:[id,i]', array(
@@ -179,16 +179,6 @@ $testResults_path = $test_run_path . '/results_' . $test_run_data['test_suite_id
 $server_port = $test_run_data['app_server_port'];
 
 
-//TODO @ELIRAN CODE HERE for protractor / selenium etc
-/**
- * Eliran - here are the variables that are available to you at this point:
- * $test_run_data['app_version'] this is the app version we are testing now
- * $test_run_data['mnc_identifier'] this is the version of the version we are testing BUT it might be a random string, see the next variable below
- * $test_run_data['mnc_user_defined'] this means that the user created an MNC and may have changed files on it, so we can't assume it's any specific version of the MNC, so just assume this is the latest MNC version for your tests
- * $test_run_data['app_server_port'] this is the port that ionic serve is serving on so you can point protractor to http://localhost:PORT
- *
- * Note that this server will run multiple tests simultaneously so let me know if selenium is bugging out due to port number being used / different etc. we might generate our own port #s and store them in the DB or something
- */
 
 /*
 \TestPlayground\DB::query('UPDATE test_suite_run SET activity_message = "Starting Webdriver" WHERE id = ?:[id,i]', array(
@@ -232,7 +222,7 @@ exports.config = {
         }},
     jasmineNodeOpts: {
 		showColors: true,
-        defaultTimeoutInterval: 10000
+        defaultTimeoutInterval: 60000
 	},
     onPrepare: function () {
         jasmine.getEnv().addReporter(
@@ -241,6 +231,7 @@ exports.config = {
     //Choose which spec file to read
     specs:
         [
+            '$protractor_spec_filepath/deviceMnc-spec.js',
             '$protractor_spec_filepath/presentation.js'
             // '$protractor_spec_filepath/login-spec.js'
             // '$protractor_spec_filepath/devices-spec.js',
@@ -248,7 +239,6 @@ exports.config = {
         ]
 };
 CONFIGJS;
-
 
 file_put_contents($test_run_path . '/conf.js', $protractor_configjs_content);
 sleep(1);

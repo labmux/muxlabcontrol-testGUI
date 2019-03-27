@@ -24,6 +24,7 @@ var port = browser.params.port;
  */
 describe('Tab changes', function () {
     beforeEach(function () {
+        browser.ignoreSynchronization = true;
         browser.get(port);
 
     });
