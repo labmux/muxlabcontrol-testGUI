@@ -51,6 +51,11 @@ class MNC {
     }
 
     public static function createMNCInstance($name, $mnc_version, $system_initiated = false) {
+        while (self::isMNCInstantiating()) {
+            sleep(1);
+        }
+
+        self::setIsMNCInstantiating(true);//lock the instantiating mechanism, to prevent > 1 VM insantiating at a time.
 
         if (empty($name)) {
             return array(
@@ -73,17 +78,15 @@ class MNC {
         if (!in_array($mnc_version, $availableVersions)) {
             return array(
                 'status' => 'error',
-                'message' => 'the version number you provided is invalid (does not exist on server)'
+                'message' => 'the version number you provided is invalid (does not exist on server): ' . $mnc_version
             );
         }
 
-        while (self::isMNCInstantiating() === true) {
-            sleep(1);
-        }
 
         try {
+
             //ok, now let's clone the snapshot of this version version for the user
-            self::setIsMNCInstantiating(true);//lock the insantiating mechanism, to prevent > 1 VM insantiating at a time.
+            //self::setIsMNCInstantiating(true);//lock the insantiating mechanism, to prevent > 1 VM insantiating at a time.
 
             //register the new box info to the DB
             try {
@@ -111,12 +114,14 @@ class MNC {
             }
 
             //instantiate the machine:
+            DB::query('UPDATE mnc SET status = "cloning" WHERE id = ?:[id,i]', array('id' => $vbox_id));
             $clone = shell_exec('sudo -u muxlab VBoxManage clonevm primary --snapshot ' . $mnc_version . ' --name ' . self::$box_prefix . $vbox_id . ' --register --options link --mode machine');
-            DB::query('UPDATE mnc SET status = "instantiated" WHERE id = ?:[id,i]', array('id' => $vbox_id));
+            DB::query('UPDATE mnc SET status = "cloned" WHERE id = ?:[id,i]', array('id' => $vbox_id));
 
             //now let's boot it and change the default IP to something unique
             self::startMNC($vbox_id);
 
+            DB::query('UPDATE mnc SET status = "booting" WHERE id = ?:[id,i]', array('id' => $vbox_id));
             self::waitForMNCBooted('192.168.168.50');
 
             $box_new_ip = self::getAvailableIPForMNC();
@@ -128,7 +133,7 @@ class MNC {
                 );
             }
 
-
+            DB::query('UPDATE mnc SET status = "setting ip" WHERE id = ?:[id,i]', array('id' => $vbox_id));
             self::setBoxIP('192.168.168.50', $box_new_ip);
             DB::query('UPDATE mnc SET status = "ready", ip_address = ?:[new_ip,s] WHERE id = ?:[id,i]', array('id' => $vbox_id, 'new_ip' => $box_new_ip));
 
@@ -261,7 +266,14 @@ iface lo inet loopback
     }
 
     private static function setIsMNCInstantiating($is_instantiating) {
+        if (!empty($is_instantiating)) {
+            //DB::query('LOCK TABLE config WRITE', array());
+        }
         DB::query('REPLACE INTO config SET name = "is_mnc_instantiating", value = ?:[val,b]', array('val' => $is_instantiating));
+
+        if (empty($is_instantiating)) {
+            //DB::query('UNLOCK TABLES', array());
+        }
     }
 
 
@@ -287,6 +299,15 @@ iface lo inet loopback
             if (!$ssh->login('root', '111111')) {
                 $is_booted = false;
             }
+            $content = $ssh->exec('ls');
+            if (empty($content)) {
+                $is_booted = false;
+            }
+
+            if (!self::isMNCApacheRunning($ip)) {
+                $is_booted = false;
+            }
+
             @$ssh->disconnect();
         } catch (\Exception $e) {
             $is_booted = false;
@@ -296,15 +317,14 @@ iface lo inet loopback
 
     }
 
-    /*
-    private static function isMNCBooted($ip) {
+
+    private static function isMNCApacheRunning($ip) {
         $url='http://' . $ip . '/mnc';
 
         $ch = curl_init();
-        $timeout = 2;
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 
@@ -313,5 +333,5 @@ iface lo inet loopback
         } else {
             return false;
         }
-    }*/
+    }
 }

@@ -156,6 +156,7 @@
                 <th>IP Address</th>
                 <th>Time Created</th>
                 <th>Status</th>
+                <th>Activity</th>
                 <th>Actions</th>
             </tr>
             <tr ng-repeat="mnc in mncs" ng-class="{'warning' : mnc.system_initiated == 1}">
@@ -163,6 +164,7 @@
                 <td>{{ mnc.ip_address }}</td>
                 <td>{{ mnc.timestamp_created }}</td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;<span ng-class="{red:mnc.status == 'stopped', green:mnc.status == 'ready' || mnc.status == 'started','glyphicon glyphicon-refresh glyphicon-refresh-animate':mnc.status == 'uninstantiated'}"></span></td>
+                <td>&nbsp;&nbsp;<span>{{mnc.status}}</span></td>
                 <td>
                     <div class="input-group-btn">
                         <button class="btn btn-default" ng-if="mnc.status == 'stopped'" ng-click="$ctrl.startMNC(mnc.id)"><span class="glyphicon glyphicon-play"></span></button>

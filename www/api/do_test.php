@@ -55,6 +55,14 @@ if (!empty($test_run_data['mnc_user_defined'])) {
         'id' => $data['test_run_id']
     ));
     $mnc_instance = \TestPlayground\MNC::createMNCInstance('System Initiated ' . $test_run_data['test_suite_id'] . '_' . $data['test_run_id'], $test_run_data['mnc_identifier'], true);
+    if (!empty($mnc_instance['status']) && $mnc_instance['status'] == 'error') {
+        \TestPlayground\DB::query('UPDATE test_suite_run SET activity_message = ?:[message,s], status = "failed" WHERE id = ?:[id,i]', array(
+            'id' => $data['test_run_id'],
+            'message' => $mnc_instance['message']
+        ));
+
+        exit(0);
+    }
     //run the update file here if applicable
     \TestPlayground\DB::query('UPDATE test_suite_run SET activity_message = "MNC Created" WHERE id = ?:[id,i]', array(
         'id' => $data['test_run_id']

@@ -22,15 +22,15 @@ var port = browser.params.port;
 /**
  * Make sure switching tabs works
  */
-describe('Tab changes', function () {
+describe('Connections Tests', function () {
     beforeEach(function () {
-        browser.ignoreSynchronization = true;
+        browser.ignoreSynchronization = false;
         browser.get(port);
 
     });
 
 
-    it('should choose first device', function () {
+    it('should connect 753 RX (Lounge TV) to 753 TX (811 Output IR E)', function () {
         LoginPage.ip_login(ip);
         LoginPage.login();
         LoginPage.goToDevices();
@@ -42,7 +42,7 @@ describe('Tab changes', function () {
         expect(e.isDisplayed()).toBe(true);
     });
 
-    it('should choose second device', function () {
+    it('should connect 762 RX (100 in TV) to 762 TX (Roku)', function () {
         LoginPage.login();
         LoginPage.goToDevices();
 
@@ -71,7 +71,18 @@ describe('Tab changes', function () {
     //     expect(browser.getCurrentUrl()).toContain('/devices');
     // });
     //
-    it('should add location', function () {
+
+
+});
+
+describe('Locations Tests', function () {
+    beforeEach(function () {
+        browser.ignoreSynchronization = false;
+        browser.get(port);
+
+    });
+
+    it('should add new location', function () {
 
         LoginPage.login();
         LoginPage.goToLocations();
