@@ -77,14 +77,14 @@ describe('Add Mnc Device families', function () {
     /**
      * These its both create a different device
      */
-    it('should create a first mnc device', function () {
+    it('should create a 754 product family', function () {
         goToProducts().then(function () {
             addDevice('AUTOMATED TEST DEVICE 1', 'HDMI over IP (500752/753/754/755/756)');
         })
 
     });
 
-    it('should create a second mnc device', function () {
+    it('should create a 762/763 product family', function () {
         goToProducts().then(function () {
             addDevice('AAUTOMATED TEST DEVICE 2', 'HDMI over IP H264/H265 (500762)');
         });

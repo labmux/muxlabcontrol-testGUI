@@ -42,6 +42,17 @@ var LoginPage = function () {
 
         browser.wait(EC.elementToBeClickable(login_btn), 7000);
         login_btn.click();
+
+        browser.sleep(300);
+        element.all(by.cssContainingText('.popup-title', 'Recommended')).then(function(items) {
+            if (items.length) {
+                var updateRecommendedPopup = items[0];
+                var updateRecommendedButton = updateRecommendedPopup.element(by.xpath('..')).element(by.xpath('..')).element(by.className('button-positive'));
+                updateRecommendedButton.click();
+            }
+
+        });
+
     };
 
     /**

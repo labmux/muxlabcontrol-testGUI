@@ -198,9 +198,6 @@
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;<span ng-class="{red:testsuite.status == 'stopped', green:testsuite.status == 'done' || testsuite.status == 'started','glyphicon glyphicon-refresh glyphicon-refresh-animate':testsuite.status == 'pending' || testsuite.status == 'in_progress' || testsuite.status == ''}"></span></td>
                     <td class="">
                         <div class="">
-                            <label class="btn btn-default">
-                                Choose file <input type="file" hidden>
-                            </label>
                             <button class="btn btn-danger" ng-click="$ctrl.deleteTestSuite(testsuite.id)"><span class="glyphicon glyphicon-trash"></span></button>
                         </div>
                     </td>
