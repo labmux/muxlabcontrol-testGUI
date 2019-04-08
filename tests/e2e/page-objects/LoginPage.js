@@ -60,20 +60,28 @@ var LoginPage = function () {
      */
     this.goToDevices = function () {
         var devicestab = element(by.className("icon-brandify-receiver-generic-blue"));
+        browser.wait(EC.elementToBeClickable(devicestab), 1000);
+
         devicestab.click();
     };
 
     this.goToLocations = function () {
         var locationstab = element(by.className("icon-brandify-location-blue"));
+        browser.wait(EC.elementToBeClickable(locationstab), 1000);
+
         locationstab.click();
     };
     this.goToFavorites = function () {
         var favoritestab = element(by.className("icon-brandify-star-blue"));
+        browser.wait(EC.elementToBeClickable(favoritestab), 1000);
+
         favoritestab.click();
     };
 
     this.goToSettings = function () {
         var settingstab = element(by.className("icon-brandify-settings"));
+        browser.wait(EC.elementToBeClickable(settingstab), 1000);
+
         settingstab.click();
     };
 

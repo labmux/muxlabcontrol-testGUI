@@ -36,22 +36,23 @@ describe('Devices test', function () {
 
         expect(length_before > length_after).toBe(true);
     });
-    // it('should verify that devices list is not empty', function () {
-    //     //LoginPage.ip_login();
-    //     LoginPage.login();
-    //     LoginPage.goToDevices();
-    //
-    //     element.all(by.repeater('device in displaysList.available')).count().then(function (devices) {
-    //         expect(devices >= 1).toBe(true);
-    //     });
-    // });
-    //
-    // it('should verify that sources list is not empty', function () {
-    //     LoginPage.login();
-    //     LoginPage.goToDevices();
-    //
-    //     element.all(by.repeater('device in sourcesList.available')).then(function (sources) {
-    //         expect(sources.length >= 1).toBe(true);
-    //     });
-    // });
+
+    it('should verify that devices list is not empty', function () {
+        //LoginPage.ip_login();
+        LoginPage.login();
+        LoginPage.goToDevices();
+
+        element.all(by.repeater('device in displaysList.available')).count().then(function (devices) {
+            expect(devices >= 1).toBe(true);
+        });
+    });
+
+    it('should verify that sources list is not empty', function () {
+        LoginPage.login();
+        LoginPage.goToDevices();
+
+        element.all(by.repeater('device in sourcesList.available')).then(function (sources) {
+            expect(sources.length >= 1).toBe(true);
+        });
+    });
 });

@@ -4,7 +4,7 @@ exports.config = {
     params: {
         //ip: '192.168.168.250',
         //ip:'muxlablab.ngrok.io',
-        ipAddress: "192.168.168.85",
+        ipAddress: "192.168.168.8",
         port: "http://localhost:8100/",
         username: 'admin',
         password: 'admin',
@@ -25,11 +25,16 @@ exports.config = {
     //Choose which spec file to read
     specs:
         [
-            'deviceMnc-spec.js',
-            // 'presentation.js'
-            // 'login-spec.js'
-            // 'devices-spec.js',
+            'devices-spec.js',
             //'locations-spec.js'
+
+            // WORK
+            // 'login-spec.js',
+            // 'settings-spec.js,'
+            // 'deviceMnc-spec.js',
+            // 'presentation.js'
+
+
         ]
 };
 
