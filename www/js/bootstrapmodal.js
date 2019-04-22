@@ -187,6 +187,7 @@ app.controller('VirtualMachineCtrl', function ($scope, $uibModalInstance, TestSe
             //create version virtual machine
             TestServerAPIService.createMNCVirtualMachine($scope.mnc_name, $scope.mnc_versionSelected).then(function (result) {
                 $scope.alert = [{type:'success', msg: "Created Virtual MNC succesfully"}];
+                console.log(result);
 
             }).catch(function (e) {
                 console.log("Failed to create version virtual machine");
@@ -232,12 +233,6 @@ app.controller('TestSuiteCtrl', function ($scope, $uibModalInstance, TestServerA
          console.log(e);
          $scope.alert = [{type:'danger', msg: "Error occurred while getting available Muxlab Control App versions"}];
     });
-
-    //offline tests
-    // $scope.availableAppVersions = [123, 123, 123, 123, 123, 12, 312, 312, 312, 3123, 213];
-    // $scope.availableMncVersions = [21222, 12312, 12231, 21312, 1223, 1231, 123123, 2312, 123123,
-    //     345, 345, 34534, 5345, 345, 345, 345, 345, 345, 345345, 345345, 34534534, 5345, 345345, 3534, 5];
-
 
     $ctrl.createTestSuite = function () {
         var mncVersions = [];

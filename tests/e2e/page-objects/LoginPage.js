@@ -27,7 +27,7 @@ var LoginPage = function () {
     this.login = function () {
         var username = element(by.name("txt_username"));
         var password = element(by.name('txt_password'));
-        var login_btn = element(by.name('btn_login'));
+        var login_btn = element(by.css('[ng-click="!connectionAttemptInProgress && login()"]'));
 
         //wait for page to be ready before clearing and clicking
         browser.wait(EC.elementToBeClickable(username), 7000);
@@ -60,7 +60,7 @@ var LoginPage = function () {
      */
     this.goToDevices = function () {
         var devicestab = element(by.className("icon-brandify-receiver-generic-blue"));
-        browser.wait(EC.elementToBeClickable(devicestab), 1000);
+        browser.wait(EC.elementToBeClickable(devicestab), 2000);
 
         devicestab.click();
     };

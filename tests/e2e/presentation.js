@@ -31,7 +31,7 @@ describe('Connections Tests', function () {
 
 
     it('should connect 753 RX (Lounge TV) to 753 TX (811 Output IR E)', function () {
-        LoginPage.ip_login(ip);
+        // LoginPage.ip_login(ip);
         LoginPage.login();
         LoginPage.goToDevices();
 

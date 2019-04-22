@@ -32,12 +32,13 @@ var LocationsPage = function () {
      * @param sublocation_name
      */
     this.addSubLocation = function (sublocation_name) {
-        var addSubLocation_btn = element(by.name("locations_addSublocation"));
-        var sublocationName = element(by.model("addLocationData.name"));
-        var create_btn = element(by.name("btn_create"));
-        var moreOptions = this.getMoreOptionsBtn();
+        let moreOptions = this.getMoreOptionsBtn();
 
         moreOptions.click();
+        let addSubLocation_btn = element(by.css('div.list a.item[ng-click="showAddNewLocationModal($event, currentPopoverLocation);"]'));
+        let sublocationName = element(by.model("addLocationData.name"));
+        let create_btn = element(by.css('button[ng-click="addLocation(addLocationData)"]'));
+
         addSubLocation_btn.click();
         sublocationName.sendKeys(sublocation_name);
         create_btn.click();
@@ -45,6 +46,7 @@ var LocationsPage = function () {
 
     /**
      * Deletes first location on the list
+     * Does not work with locations that have sub location
      */
     this.delete = function() {
         var delete_btn = element(by.css('[ng-click="deleteLocation(currentPopoverLocation)"]'));
@@ -57,13 +59,40 @@ var LocationsPage = function () {
     };
 
     /**
+     * Deletes first sublocation on the list
+     */
+    //TODO DOES NOT WORK: ERROR: ELEMENT NOT INTERACTABLE
+    this.deleteSubLocation = function() {
+        // var delete_btn = element(by.css('[ng-click="deleteLocation(currentPopoverLocation)"]'));
+        // var confirmDelete_btn = element(by.buttonText('Delete'));
+        var moreOptions = this.getMoreOptionsBtn();
+
+        moreOptions.click();
+        // delete_btn.click();
+        // confirmDelete_btn.click();
+    };
+
+    /**
+     * Deletes location with sublocations
+     */
+    this.deleteSubLocations = function() {
+        var delete_btn = element(by.css('[ng-click="deleteLocation(currentPopoverLocation)"]'));
+        var confirmDelete_btn = element(by.buttonText('Delete them'));
+        var moreOptions = element(by.css('[ng-click="showLocationOptions($event, location)"]'));
+
+        moreOptions.click();
+        delete_btn.click();
+        confirmDelete_btn.click();
+    };
+
+    /**
      * Renames first location on the list
      * @param new_name
      */
     this.rename = function (new_name) {
-        var rename_btn = element(by.name("locations_rename"));
+        var rename_btn = element(by.css('[ng-click="renameLocation(currentPopoverLocation)"]'));
         var name = element(by.model("renameLocationPopupData.newName"));
-        var save_btn = element(by.className('locations-saveRename'));
+        var save_btn = element(by.buttonText('Save'));
         var moreOptions = this.getMoreOptionsBtn();
 
         moreOptions.click();
@@ -74,7 +103,7 @@ var LocationsPage = function () {
 
     this.move = function () {
         var moreOptions = this.getMoreOptionsBtn();
-        var move_btn = element(by.name("locations_move"));
+        var move_btn = element(by.css('[ng-click="moveLocation(currentPopoverLocation)"]'));
         var location;
         var search = element(by.model("search.search_terms"));
 
@@ -97,9 +126,9 @@ var LocationsPage = function () {
      * @param device_location
      */
     this.addDevice = function (device_name, device_location) {
-        var addDevice_btn = element(by.name("locations_addDevice"));
+        var addDevice_btn = element(by.css('[ng-click="addDeviceModal.showModal($event);"]'));
         var search = element(by.model("addDeviceModal.addDeviceSearch.customName"));
-        var check_btn = element(by.name("locations_addDevice_checkmark"));
+        var check_btn = element(by.model("device.selectedForAdding"));
         var device;
 
         addDevice_btn.click();

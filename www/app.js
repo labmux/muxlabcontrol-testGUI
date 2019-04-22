@@ -80,6 +80,7 @@ angular.module('uiBootstrap').factory('TestServerAPIService', ['$q', '$http', fu
         getTestSuites: function () {
             return $http.get(api_root + '/test-suites');
         },
+
         /**
          * Creates a new test suite. Specify an array of version numbers and app versions to test, as well as a name for your test suite
          * and optionally an update file which will be used to update the 811 before each test run. Remember to run getMNCVirtualMachines after this to update your

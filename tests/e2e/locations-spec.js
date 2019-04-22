@@ -19,11 +19,7 @@ var LocationsPage = new locationspage();
 var testvalidation = require('./page-objects/TestValidations');
 var TestValidation = new testvalidation();
 
-describe('\n--------------------------------- Locations Test ---------------------------------\n' +
-        'Version: '+  + '\n'+
-        'IP: ' + + '\n' +
-        'Port: ' +  + '\n' +
-        '----------------------------------------------------------------------------------\n\n', function () {
+describe('Locations page tests', function () {
 
         beforeEach(function () {
             browser.get(browser.params.port);
@@ -32,8 +28,6 @@ describe('\n--------------------------------- Locations Test -------------------
        // var moreOptions = LocationsPage.getMoreOptionsBtn();
 
      it('should add location', function () {
-
-        LoginPage.ip_login(browser.params.ipAddress);
         LoginPage.login();
 
         LoginPage.goToLocations();
@@ -55,7 +49,7 @@ describe('\n--------------------------------- Locations Test -------------------
         });
 
 
-     }); //it
+     });
 
     it('should delete location', function () {
         LoginPage.login();
@@ -80,14 +74,15 @@ describe('\n--------------------------------- Locations Test -------------------
      });
 
     it('should rename a location', function () {
+
         LoginPage.login();
         LoginPage.goToLocations();
 
-        LocationsPage.rename("RENAMED");
+        LocationsPage.rename("A RENAMED");
 
         //will verify that first element in array is equal to "ANAME"
         element.all(by.repeater('location in locations')).then(function(loc) {
-            expect(loc[0].getText()).toBe("RENAMED");
+            expect(loc[0].getText()).toBe("A RENAMED");
         });
     });
 
@@ -101,6 +96,55 @@ describe('\n--------------------------------- Locations Test -------------------
         element.all(by.repeater('location in locations')).count().then(function (loc) {
             expect(loc != 0).toBe(true);
         });
+    });
+
+    /*
+    does not click three dots
+     */
+    //TODO DOES NOT WORK: ERROR: ELEMENT NOT INTERACTABLE
+    // it('should delete sublocation', function () {
+    //     let length_before, length_after;
+    //     LoginPage.login();
+    //     LoginPage.goToLocations();
+    //     LocationsPage.next();
+    //
+    //     element.all(by.repeater('location in locations')).count().then(function (loc) {
+    //         length_before = loc;
+    //
+    //     });
+    //
+    //     LocationsPage.deleteSubLocation();
+    //
+    //
+    //     element.all(by.repeater('location in locations')).count().then(function (loc) {
+    //         length_after = loc;
+    //     });
+    //
+    //     expect(length_before > length_after).toBe(true);
+    // });
+
+    it('should delete location with sublocations', function () {
+        LoginPage.login();
+        LoginPage.goToLocations();
+
+        var length_before;
+        var length_after;
+
+        // create before deleting
+        LocationsPage.addSubLocation('A TEST');
+
+        element.all(by.repeater('location in locations')).count().then(function (len) {
+            length_before = len;
+
+            LocationsPage.deleteSubLocations();
+        });
+
+        element.all(by.repeater('location in locations')).count().then(function (len) {
+            length_after = len;
+
+            expect(length_before > length_after).toBe(true);
+        });
+
     });
 
     it('should create two new locations, then move one into the other', function () {
@@ -127,6 +171,7 @@ describe('\n--------------------------------- Locations Test -------------------
 
     /**
      * Adds a device in the first location
+     * REQUIRED: AVAILABLE DEVICE
      */
     it('should add a device in a location', function () {
         LoginPage.login();
@@ -156,6 +201,10 @@ describe('\n--------------------------------- Locations Test -------------------
 
     });
 
+    /**
+     * Removes a device from a location
+     * REQUIRED: AVAILABLE DEVICE
+     */
     it('should remove a device from a location', function () {
         LoginPage.login();
         LoginPage.goToLocations();
@@ -170,8 +219,8 @@ describe('\n--------------------------------- Locations Test -------------------
                     var location = loc;
                     location[0].click();
 
-                    moreOptions = element(by.name("locations_deviceOptions"));
-                    removeDevice_btn = element(by.model('locations_removeDevice'));
+                    moreOptions = element(by.css('[ng-click="showDeviceOptions($event, device)"]'));
+                    removeDevice_btn = element(by.css('[ng-click="removeDeviceFromLocation(currentPopoverDevice)"]'));
                 });
 
         element.all(by.repeater('device in devices')).count().then(function (dev) {
@@ -185,33 +234,6 @@ describe('\n--------------------------------- Locations Test -------------------
             devices_after = dev;
 
             expect(devices_before > devices_after).toBe(true);
-        });
-
-    });
-
-    it('should delete sublocation and location', function () {
-        LoginPage.ip_login();
-        LoginPage.login();
-        LoginPage.goToLocations();
-
-        var moreOptions_btn = element(by.name('locations_moreOptions'));
-        var delete_btn = element(by.name('locations_delete'));
-        var confirmDelete_btn = element(by.className('locations-confirmDelete'));
-
-        var length_before;
-        var length_after;
-        element.all(by.repeater('location in locations')).count().then(function (len) {
-            length_before = len;
-
-            moreOptions_btn.click();
-            delete_btn.click();
-            confirmDelete_btn.click();
-        });
-
-        element.all(by.repeater('location in locations')).count().then(function (len) {
-            length_after = len;
-
-            expect(length_before > length_after).toBe(true);
         });
 
     });
