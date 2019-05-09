@@ -298,12 +298,12 @@ app.controller('TestSuiteCtrl', function ($scope, $uibModalInstance, TestServerA
     };
 
     $ctrl.toggleSelectedSpec = function (spec) {
-        let i = $scope.selectedSpec.indexOf(spec);
+        let i = $scope.selectedSpecs.indexOf(spec);
 
         if (i == -1)
-            $scope.selectedSpec.push(spec);
+            $scope.selectedSpecs.push(spec);
         else
-            $scope.selectedSpec.splice(i, 1);
+            $scope.selectedSpecs.splice(i, 1);
     };
 
     $scope.setUploadFile = function (files) {
@@ -314,7 +314,6 @@ app.controller('TestSuiteCtrl', function ($scope, $uibModalInstance, TestServerA
         console.log($scope.fd);
 
         $scope.fd.append("file", files[0]);
-        $scope.fd.append('Name', 'Desperation');
         console.log($scope.fd.values());
 
         for (var value of $scope.fd.entries()) {
