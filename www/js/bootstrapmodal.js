@@ -199,7 +199,7 @@ app.controller('VirtualMachineCtrl', function ($scope, $uibModalInstance, TestSe
     };
 
     this.cancel = function () {
-        $uibModalInstance.dismiss('cancel');
+        $uibModalInstance.close();
     };
 
 
@@ -274,7 +274,7 @@ app.controller('TestSuiteCtrl', function ($scope, $uibModalInstance, TestServerA
     };
 
     $ctrl.cancel = function () {
-        $uibModalInstance.dismiss('cancel');
+        $uibModalInstance.close();
     };
 
     $ctrl.toggleSelectedMncVersion = function (version) {
