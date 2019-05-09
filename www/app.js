@@ -89,20 +89,26 @@ angular.module('uiBootstrap').factory('TestServerAPIService', ['$q', '$http', fu
          * @param mncVersions
          * @param appVersions
          * @param updateFile
+         * @param specs
          * @returns {HttpPromise}
          */
-        createTestSuite: function (name, mncVersions, appVersions, updateFile) {
-            if (typeof updateFile === 'undefined') {
-                updateFile = null;
+        createTestSuite: function (name, mncVersions, appVersions, fd, specs) {
+            if (typeof fd === 'undefined') {
+                fd = {};
             }
 
-            return $http.post(api_root + '/test-suites', {
-                name: name,
-                mnc_versions: mncVersions,
-                app_versions: appVersions,
-                update_file: updateFile
+            fd.append('name', name);
+            fd.append('mnc_versions', mncVersions);
+            fd.append('app_versions', appVersions);
+            fd.append('specs', specs);
+
+            return $http.post(api_root + '/test-suites', fd, {
+                withCredentials: true,
+                headers: {'Content-Type': undefined },
+                transformRequest: angular.identity
             });
         },
+
         /**
          * Deletes a test suite. User will do this when he ran his test, downloaded his results and doesn't need it anymore
          * @param testSuiteID
@@ -110,6 +116,14 @@ angular.module('uiBootstrap').factory('TestServerAPIService', ['$q', '$http', fu
          */
         deleteTestSuite: function (testSuiteID) {
             return $http.delete(api_root + '/test-suites/' + testSuiteID);
+        },
+
+        /**
+         * Returns a list of all the different test specs
+         * @returns {HttpPromise}
+         */
+        getTestSpecs: function () {
+            return $http.get(api_root + '/test-specs')
         }
 
     };

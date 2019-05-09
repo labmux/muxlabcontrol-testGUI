@@ -30,11 +30,23 @@
         </div>
     </div>
 
-    <div style="clear:both;"></div>
+    <div>
+        <!-- Test Specs checkboxes -->
+        <h5 style="text-align:center">Test Specs</h5>
+        <div class="list-group">
+            <div ng-repeat="spec in spec_files track by $index">
+                <input type="checkbox" ng-click="$ctrl.toggleSelectedSpec(spec)" id="testSpec-{{$index}}">
+                <label class="list-group-item" for="testSpec-{{$index}}">{{spec}}</label>
+            </div>
+        </div>
+    </div>
 
-    <label class="btn btn-default">
-        Choose Update file <input type="file" hidden>
-    </label>
+    <!--<div style="clear:both;"></div>-->
+
+    <!--<label class="btn btn-default">-->
+        <!--Choose Update file-->
+    <!--</label>-->
+    <input type="file" name="file" onchange="angular.element(this).scope().setUploadFile(this.files)">
     <p style="font-size:14px;">This file will be used to run the Software Update for each MNC before running the app against it.</p>
 </div>
 

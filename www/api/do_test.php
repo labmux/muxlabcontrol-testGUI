@@ -208,6 +208,16 @@ $protractor_spec_filepath = '/var/www/html/tests/e2e';//where the protractor e2e
 
 shell_exec('sudo -u muxlab mkdir ' . $test_run_path . '/beautiful-report');
 
+// get a string of all the spec files
+$spec_string = '';
+foreach ($test_run_data['specs'] as $key => $spec) {
+    //if its the last file, dont put a comma
+    if ($key == count($test_run_data['specs']) - 1)
+        $spec_string .= "'$protractor_spec_filepath/$spec'";
+    else
+        $spec_string .= "'$protractor_spec_filepath/$spec',";
+}
+
 $protractor_configjs_content = <<<CONFIGJS
 
 var HtmlReporter = require('protractor-beautiful-reporter');
@@ -222,6 +232,7 @@ exports.config = {
         port: "http://localhost:{$test_run_data['app_server_port']}/",
         username: 'admin',
         password: 'admin',
+        test_run_id: "{$data['test_run_id']}"
     },
     files: [{pattern: '$protractor_spec_filepath/*.js', included: true}],
     seleniumAddress: 'http://localhost:4444/wd/hub',
@@ -235,15 +246,19 @@ exports.config = {
     onPrepare: function () {
         jasmine.getEnv().addReporter(
             reporter.getJasmine2Reporter());
+            
+//        require('protractor-uisref-locator')(protractor);    
     },
     //Choose which spec file to read
     specs:
         [
-            '$protractor_spec_filepath/deviceMnc-spec.js',
-            '$protractor_spec_filepath/presentation.js'
-            // '$protractor_spec_filepath/login-spec.js'
-            // '$protractor_spec_filepath/devices-spec.js',
-            //'$protractor_spec_filepath/locations-spec.js'
+            $spec_string
+//          '$protractor_spec_filepath/login-spec.js',
+//          '$protractor_spec_filepath/deviceMnc-spec.js',
+//          '$protractor_spec_filepath/presentation.js',
+//          '$protractor_spec_filepath/settings-spec.js',
+//          '$protractor_spec_filepath/devices-spec.js',
+//            '$protractor_spec_filepath/locations-spec.js'
         ]
 };
 CONFIGJS;

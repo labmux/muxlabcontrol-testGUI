@@ -2,8 +2,11 @@
  * Import LoginPage function
  * @type {LoginPage}
  */
-var loginpagepo = require('./page-objects/LoginPage.js');
+var loginpagepo = require('../page-objects/LoginPage.js');
 var LoginPage = new loginpagepo();
+
+var devicespagepo = require('../page-objects/DevicesPage');
+var DevicesPage = new devicespagepo();
 
 var ip = browser.params.ipAddress;
 var port = browser.params.port;
@@ -17,37 +20,41 @@ describe('Devices test', function () {
 
     // TODO problems with this it
     it('should delete device', function () {
-        LoginPage.ip_login(ip);
+        // LoginPage.ip_login(ip);
         LoginPage.login();
         LoginPage.goToDevices();
 
-        // TODO Ariel these names still show up and work on my version of muxlab control
-        // var moreOptions_btn = element(by.name("devices_moreOptions"));
-        // var delete_btn = element(by.name("devices_delete"));
-        // var confirmDelete_btn = element(by.className("devices-confirmDelete"));
+        var length_before, length_after;
+
+        element.all(by.repeater('device in displaysList.available')).count().then(function (len) {
+            length_before = len;
+        });
+
+        DevicesPage.deleteDevice();
+
+        element.all(by.repeater('device in displaysList.available')).count().then(function (len) {
+            length_after = len;
+            expect((length_before > length_after)).toBe(true);
+        });
+    });
+
+    //TODO doesnt work when theres an it before it
+    it('should restore deleted device', function () {
+        LoginPage.login();
+        LoginPage.goToDevices();
 
         var length_before, length_after;
 
-        element.all(by.repeater('device in displaysList.available | orderBy: sort.by track by device.mac')).count().then(function (len) {
+        element.all(by.repeater('device in displaysList.available')).count().then(function (len) {
             length_before = len;
-
         });
 
-        var moreOptions_btn = element(by.css('i[ng-click="showDeviceOptions($event, device)"]'));
-        var delete_btn = element(by.css('a[ng-click="deleteDevice(currentPopoverDevice)"]'));
-        var confirmDelete_btn = element.all(by.repeater('button in buttons')).get(1);       // get by repeater cause button exists through ng-repeat, so no specific id
+        DevicesPage.restoreDevice();
 
-        // delete device
-        moreOptions_btn.click();
-        delete_btn.click();
-        confirmDelete_btn.click();
-
-        element.all(by.repeater('device in displaysList.available | orderBy: sort.by track by device.mac')).count().then(function (len) {
+        element.all(by.repeater('device in displaysList.available')).count().then(function (len) {
             length_after = len;
+            expect((length_after > length_before)).toBe(true);
         });
-
-        //TODO Not working, error: expecting false to be true
-        expect(length_before > length_after).toBe(true);
     });
 
     // it('should verify that devices list is not empty', function () {

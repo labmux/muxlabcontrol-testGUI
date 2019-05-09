@@ -4,14 +4,15 @@ exports.config = {
     params: {
         //ip: '192.168.168.250',
         //ip:'muxlablab.ngrok.io',
-        ipAddress: "192.168.168.186",
+        ipAddress: "eliran.ngrok.io",
         port: "http://localhost:8100/",
         username: 'admin',
         password: 'admin',
+        test_run_id: '123'
     },
     files: [{pattern: '*.js', included: true}],
     seleniumAddress: 'http://localhost:4444/wd/hub',
-    capabilities: {browserName: 'chrome'},
+    capabilities: {browserName: 'firefox'},
     jasmineNodeOpts: {
 		showColors: true,
         defaultTimeoutInterval: 30000
@@ -21,19 +22,25 @@ exports.config = {
             new HtmlReporter({
                 baseDirectory: 'tmp/screenshots'
         }).getJasmine2Reporter());
+
+        // ui-sref locator
+        require('protractor-uisref-locator')(protractor);
     },
     //Choose which spec file to read
     specs:
         [
+
+
+            //
+            // // WORK
+            // 'login-spec.js',
+            // 'locations-spec.js',
             // 'devices-spec.js',
+            'settings-spec.js'
 
-
-            // WORK
-            'login-spec.js',
-            'locations-spec.js',
-            'settings-spec.js',
-
-            'deviceMnc-spec.js',
+            // 'login-spec.js',
+            //
+            // 'deviceMnc-spec.js',
             // 'presentation.js'
 
 

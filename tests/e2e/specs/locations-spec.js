@@ -2,35 +2,38 @@
  * Import LoginPage functions
  * @type {LoginPage}
  */
-var loginpage = require('./page-objects/LoginPage.js');
+var loginpage = require('../page-objects/LoginPage.js');
 var LoginPage = new loginpage();
 
 /**
  * Import LocationsPage functions
  * @type {LocationsPage}
  */
-var locationspage = require('./page-objects/LocationsPage');
+var locationspage = require('../page-objects/LocationsPage');
 var LocationsPage = new locationspage();
 
 /**
  * Import TestValidation functions
  * @type {TestValidation}
  */
-var testvalidation = require('./page-objects/TestValidations');
+var testvalidation = require('../page-objects/TestValidations');
 var TestValidation = new testvalidation();
+
+//get muxlablab defaultPageData key
+var ip = browser.params.ipAddress;
+var port = browser.params.port;
 
 describe('Locations page tests', function () {
 
-        beforeEach(function () {
-            browser.get(browser.params.port);
-        });
+     beforeEach(function () {
+         browser.get(port);
+     });
 
-       // var moreOptions = LocationsPage.getMoreOptionsBtn();
 
      it('should add location', function () {
         LoginPage.login();
-
         LoginPage.goToLocations();
+
         var locationlength_before;
         var locationlength_after;
 
@@ -74,15 +77,20 @@ describe('Locations page tests', function () {
      });
 
     it('should rename a location', function () {
-
         LoginPage.login();
         LoginPage.goToLocations();
 
-        LocationsPage.rename("A RENAMED");
+        LocationsPage.addLocation('Rename this');
+        LocationsPage.rename('Rename this', '0 RENAMED');
 
-        //will verify that first element in array is equal to "ANAME"
+        // refresh session to see if location was succesfully renamed
+        browser.get(port);
+        LoginPage.login();
+        LoginPage.goToLocations();
+
+        //will verify that first element in array is equal to "AAA RENAMED"
         element.all(by.repeater('location in locations')).then(function(loc) {
-            expect(loc[0].getText()).toBe("A RENAMED");
+            expect(loc[0].getText()).toBe("0 RENAMED");
         });
     });
 
@@ -101,16 +109,23 @@ describe('Locations page tests', function () {
     /*
     does not click three dots
      */
-    //TODO DOES NOT WORK: ERROR: ELEMENT NOT INTERACTABLE
+    //TODO DOES NOT WORK
+    /**
+     * Creates a location with a sublocation, then deletes that sublocation
+     */
     // it('should delete sublocation', function () {
-    //     let length_before, length_after;
+    //     LoginPage.ip_login(ip);
     //     LoginPage.login();
     //     LoginPage.goToLocations();
+    //
+    //     var length_before, length_after;
+    //
+    //     LocationsPage.addLocation('0 SUBLOCATION TEST');
+    //     LocationsPage.addSubLocation('0 SUB');
     //     LocationsPage.next();
     //
     //     element.all(by.repeater('location in locations')).count().then(function (loc) {
     //         length_before = loc;
-    //
     //     });
     //
     //     LocationsPage.deleteSubLocation();
@@ -118,9 +133,10 @@ describe('Locations page tests', function () {
     //
     //     element.all(by.repeater('location in locations')).count().then(function (loc) {
     //         length_after = loc;
+    //         expect(length_before > length_after).toBe(true);
+    //
     //     });
     //
-    //     expect(length_before > length_after).toBe(true);
     // });
 
     it('should delete location with sublocations', function () {
@@ -170,27 +186,21 @@ describe('Locations page tests', function () {
     });
 
     /**
-     * Adds a device in the first location
+     * Create a location, then adds a device to it
      * REQUIRED: AVAILABLE DEVICE
      */
     it('should add a device in a location', function () {
         LoginPage.login();
         LoginPage.goToLocations();
-
-        //device to search for to add to location
-        const DEVICE_NAME = "Middle TV";
-
-        element.all(by.repeater('location in locations')).then(function (loc) {
-            var location = loc;
-            location[0].click();
-        });
+        LocationsPage.addLocation('ADD DEVICE TEST');
+        LocationsPage.selectLocation('ADD DEVICE TEST');
 
         var devices_before;
         var devices_after;
 
         element.all(by.repeater('device in devices')).count().then(function (dev) {
             devices_before = dev;
-            LocationsPage.addDevice(DEVICE_NAME,2);
+            LocationsPage.addDevice('Advertisement TV');
         });
 
         element.all(by.repeater('device in devices')).count().then(function (dev) {
@@ -202,40 +212,46 @@ describe('Locations page tests', function () {
     });
 
     /**
-     * Removes a device from a location
+     * First creates a location, then adds devices, then removes them
      * REQUIRED: AVAILABLE DEVICE
      */
     it('should remove a device from a location', function () {
         LoginPage.login();
         LoginPage.goToLocations();
 
-        var moreOptions;
-        var removeDevice_btn;
-
         var devices_before;
         var devices_after;
 
-        element.all(by.repeater('location in locations')).then(function (loc) {
-                    var location = loc;
-                    location[0].click();
+        LocationsPage.addLocation('Automated Location');
 
-                    moreOptions = element(by.css('[ng-click="showDeviceOptions($event, device)"]'));
-                    removeDevice_btn = element(by.css('[ng-click="removeDeviceFromLocation(currentPopoverDevice)"]'));
-                });
+        // search and select location
+        LocationsPage.selectLocation('Automated Location');
+        LocationsPage.addDevice('Advertisement TV');
 
-        element.all(by.repeater('device in devices')).count().then(function (dev) {
+        // select first location
+        // element(by.repeater('location in locations').row(0)).click();
+
+        // count devices pre removable
+        element.all(by.repeater("device in devices")).count().then(function (dev) {
             devices_before = dev;
-
-            moreOptions.click();
-            removeDevice_btn.click();
-            });
-
-        element.all(by.repeater('device in devices')).count().then(function (dev) {
-            devices_after = dev;
-
-            expect(devices_before > devices_after).toBe(true);
         });
 
+        // refresh
+        browser.get(port);
+        LoginPage.login();
+        LoginPage.goToLocations();
+
+        LocationsPage.selectLocation('Automated Location');
+        LocationsPage.removeDevice();
+
+        // count devices post removal
+        element.all(by.repeater('device in devices')).count().then(function (dev) {
+            devices_after = dev;
+            expect((devices_before > devices_after)).toBe(true);
+        });
+        // TODO: delete locattion after test, however jasmine gives timeout interval error, and webdriver control flow error
+        // LoginPage.goToLocations();
+        // LocationsPage.deleteLocation('Automated Location');
     });
 
 });

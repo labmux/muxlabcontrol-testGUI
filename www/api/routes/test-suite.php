@@ -32,6 +32,10 @@ $app->post('/test-suites', function (Request $request, Response $response, $args
     if (empty($data['app_versions'])) {
         $data['app_versions'] = '';
     }
+    if (empty($data['specs'])) {
+        $data['specs'] = '';
+    }
+
 
     $uploadedFile = '';
     $uploadedFiles = $request->getUploadedFiles();
@@ -47,7 +51,7 @@ $app->post('/test-suites', function (Request $request, Response $response, $args
         }
     }
 
-    $result = TestPlayground\TestSuite::createTestSuite($data['name'], $data['mnc_versions'], $data['app_versions'], $uploadedFile);
+    $result = TestPlayground\TestSuite::createTestSuite($data['name'], $data['mnc_versions'], $data['app_versions'], $uploadedFile, $data['specs']);
 
     if (!empty($result['status']) && $result['status'] === 'error') {
         $response = $response->withJson($result, 400);

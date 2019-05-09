@@ -5,7 +5,7 @@ var LocationsPage = function () {
      * @returns {*}
      */
     this.getMoreOptionsBtn = function () {
-        var moreOptions = element(by.css('[ng-click="showLocationOptions($event, location)"]'));
+        var moreOptions = element(by.css('div i[ng-click="showLocationOptions($event, location)"]'));
         return moreOptions;
     };
 
@@ -58,14 +58,33 @@ var LocationsPage = function () {
         confirmDelete_btn.click();
     };
 
+    this.deleteLocation = function(location) {
+        // navigate to location
+        element(by.css('span button[ng-click="toggleSearch()"]')).click();
+        element(by.model('search.search_terms')).sendKeys(location);
+        element.all(by.repeater('location in searchResults')).then(function (loc) {
+            loc[0].click();
+        });
+
+        // delete location
+        var moreOptions = element(by.css('button[ng-click="showLocationMoreOptions($event)"]'));
+        var deleteBtn = element(by.css('a[ng-click="deleteLocation($event)"]'));
+        var confirmDelete = element(by.cssContainingText('.button-positive', 'Delete'));
+
+        moreOptions.click();
+        deleteBtn.click();
+        confirmDelete.click();
+    };
+
     /**
      * Deletes first sublocation on the list
      */
-    //TODO DOES NOT WORK: ERROR: ELEMENT NOT INTERACTABLE
+    //TODO DOES NOT WORK
     this.deleteSubLocation = function() {
-        // var delete_btn = element(by.css('[ng-click="deleteLocation(currentPopoverLocation)"]'));
+        // var delete_btn = element(by.css('div a[ng-click="deleteLocation(currentPopoverLocation)"]'));
         // var confirmDelete_btn = element(by.buttonText('Delete'));
-        var moreOptions = this.getMoreOptionsBtn();
+        var moreOptions = element(by.className('icon-more-options-dots'));
+
 
         moreOptions.click();
         // delete_btn.click();
@@ -89,11 +108,13 @@ var LocationsPage = function () {
      * Renames first location on the list
      * @param new_name
      */
-    this.rename = function (new_name) {
-        var rename_btn = element(by.css('[ng-click="renameLocation(currentPopoverLocation)"]'));
+    this.rename = function (old_name, new_name) {
+        this.selectLocation(old_name);
+
+        var rename_btn = element(by.css('div a[ng-click="renameLocation($event)"]'));
         var name = element(by.model("renameLocationPopupData.newName"));
         var save_btn = element(by.buttonText('Save'));
-        var moreOptions = this.getMoreOptionsBtn();
+        var moreOptions = element(by.css('button[ng-click="showLocationMoreOptions($event)"]'));
 
         moreOptions.click();
         rename_btn.click();
@@ -125,30 +146,36 @@ var LocationsPage = function () {
      * @param device_name
      * @param device_location
      */
-    this.addDevice = function (device_name, device_location) {
-        var addDevice_btn = element(by.css('[ng-click="addDeviceModal.showModal($event);"]'));
+    this.addDevice = function (device_name) {
+        var addDevice_btn = element(by.css('button[ng-click="addDeviceModal.showModal($event);"]'));
         var search = element(by.model("addDeviceModal.addDeviceSearch.customName"));
-        var check_btn = element(by.model("device.selectedForAdding"));
-        var device;
 
         addDevice_btn.click();
         search.sendKeys(device_name);
 
         element.all(by.repeater("device in addDeviceModal.availableDevices")).then(function (dev) {
-            device = dev;
-            device[device_location].click();
-            check_btn.click();
+            element(by.model('device.selectedForAdding')).click();
+            element(by.css('[ng-click="addDeviceModal.addDevices()"]')).click();
 
         });
-        // var i = 0;
-        // while (device[i].getText() != device_name) {
-        //     i++;
-        // }
-
-
-        
 
     };
+
+    this.selectLocation = function (name) {
+        element(by.css('span button[ng-click="toggleSearch()"]')).click();
+        element(by.model('search.search_terms')).sendKeys(name);
+        element.all(by.repeater('location in searchResults')).then(function (loc) {
+            loc[0].click();
+        });
+    }
+
+    /**
+     * Removes first device from location
+     */
+    this.removeDevice = function () {
+        element(by.css('a i[ng-click="showDeviceOptions($event, device)"]')).click();
+        element(by.css('div a[ng-click="removeDeviceFromLocation(currentPopoverDevice)"]')).click();
+    }
 };
 
 module.exports = LocationsPage;

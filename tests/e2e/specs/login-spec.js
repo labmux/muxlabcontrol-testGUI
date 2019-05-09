@@ -2,7 +2,7 @@
  * Import LoginPage function
  * @type {LoginPage}
  */
-var loginpagepo = require('./page-objects/LoginPage.js');
+var loginpagepo = require('../page-objects/LoginPage.js');
 var LoginPage = new loginpagepo();
 
 //get muxlablab defaultPageData key

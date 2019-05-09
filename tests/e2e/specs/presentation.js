@@ -2,14 +2,14 @@
  * Import LoginPage function
  * @type {LoginPage}
  */
-var loginpagepo = require('./page-objects/LoginPage.js');
+var loginpagepo = require('../page-objects/LoginPage.js');
 var LoginPage = new loginpagepo();
 
 /**
  * Import LocationsPage functions
  * @type {LocationsPage}
  */
-var locationspage = require('./page-objects/LocationsPage');
+var locationspage = require('../page-objects/LocationsPage');
 var LocationsPage = new locationspage();
 
 
