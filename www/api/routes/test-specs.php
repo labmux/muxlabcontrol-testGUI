@@ -5,8 +5,8 @@ use \Psr\Http\Message\ResponseInterface as Response;
 $app->get('/test-specs', function (Request $request, Response $response, $args) {
     $files = array();
     $dir = '/var/www/html/tests/e2e/specs/';
-
     $files = scandir($dir);
+
     if (empty($files)) {
         $response = $response->withJson($files, 400);
     }

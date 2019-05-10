@@ -102,9 +102,7 @@ class TestSuite {
         }
 
         //at this point we have valid data, let's go ahead and create an entry in the DB for this test suite
-        //TODO @ARIEL jai rajouter specs et jai ecris [specs,x]
-        //Todo je ne sai pas si cest correct
-        $test_suite_id = DB::query('INSERT INTO test_suite SET name = ?:[name,s], mnc_versions = ?:[mnc_versions,s], app_versions = ?:[app_versions,s], update_file = ?:[update_file,b], specs = ?:[specs, x]', array(
+        $test_suite_id = DB::query('INSERT INTO test_suite SET name = ?:[name,s], mnc_versions = ?:[mnc_versions,s], app_versions = ?:[app_versions,s], update_file = ?:[update_file,b], specs = ?:[specs,s]', array(
             'name' => $name,
             'mnc_versions' => json_encode($mnc_versions),
             'app_versions' => json_encode($app_versions),
@@ -145,8 +143,7 @@ class TestSuite {
                     $ports_busy[] = $app_server_port;
 
                     //register in DB
-                    //TODO @ARIEL encore jai rajouter [specs, x] ici
-                    $test_run_id = DB::query('INSERT INTO test_suite_run SET test_suite_id = ?:[test_suite_id,i], mnc_identifier = ?:[mnc_id,s], mnc_user_defined = ?:[mnc_user_defined,b], app_version = ?:[app_version,s], specs = ?:[specs, x], app_server_port = ?:[app_server_port,i], status = "pending"', array(
+                    $test_run_id = DB::query('INSERT INTO test_suite_run SET test_suite_id = ?:[test_suite_id,i], mnc_identifier = ?:[mnc_id,s], mnc_user_defined = ?:[mnc_user_defined,b], app_version = ?:[app_version,s], app_server_port = ?:[app_server_port,i], status = "pending"', array(
                         'test_suite_id' => $test_suite_id,
                         'mnc_id' => $mnc_version['identifier'],
                         'mnc_user_defined' => (!empty($mnc_version['user_defined']) ? true : false),

@@ -64,6 +64,7 @@ CREATE TABLE `test_suite` (
   `status` varchar(45) DEFAULT NULL,
   `mnc_versions` longtext NOT NULL,
   `app_versions` longtext NOT NULL,
+  `specs` longtext NOT NULL,  /*TODO @ARIEL ELIRAN WAS HERE */
   PRIMARY KEY (`id`),
   UNIQUE KEY `name_UNIQUE` (`name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;

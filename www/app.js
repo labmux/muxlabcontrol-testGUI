@@ -97,6 +97,10 @@ angular.module('uiBootstrap').factory('TestServerAPIService', ['$q', '$http', fu
                 fd = {};
             }
 
+            mncVersions = JSON.stringify(mncVersions);
+            appVersions = JSON.stringify(appVersions);
+            specs = JSON.stringify(specs);
+
             fd.append('name', name);
             fd.append('mnc_versions', mncVersions);
             fd.append('app_versions', appVersions);

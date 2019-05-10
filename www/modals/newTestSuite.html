@@ -7,46 +7,52 @@
     <input type="text" ng-model="testsuite_name" id="name"><br>
 
     <br />
-    <div style="float:left;min-width:200px;width:45%">
-        <!-- MNC Versions checkboxes -->
-        <h5 style="text-align:center">MNC Versions</h5>
-        <div class="list-group">
-            <div ng-repeat="version in availableMncVersions track by $index">
-                <input type="checkbox" ng-click="$ctrl.toggleSelectedMncVersion(version)" id="mncVersion-{{$index}}">
-                <label class="list-group-item" for="mncVersion-{{$index}}">{{version}}</label>
+    <div class="">
+        <div>
+            <div>
+                <!-- MNC Versions checkboxes -->
+                <h5 style="text-align:center">MNC Versions</h5>
+                <div class="list-group">
+                    <div ng-repeat="version in availableMncVersions track by $index">
+                        <input type="checkbox" ng-click="$ctrl.toggleSelectedMncVersion(version)" id="mncVersion-{{$index}}">
+                        <label class="list-group-item" for="mncVersion-{{$index}}">{{version}}</label>
+                    </div>
+                </div>
+            </div>
+
+
+            <div>
+                <!-- App Versions checkboxes -->
+                <h5 style="text-align:center">App Versions</h5>
+                <div class="list-group">
+                    <div ng-repeat="version in availableAppVersions track by $index">
+                        <input type="checkbox" ng-click="$ctrl.toggleSelectedAppVersion(version)" id="appVersion-{{$index}}">
+                        <label class="list-group-item" for="appVersion-{{$index}}">{{version}}</label>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <!-- Test Specs checkboxes -->
+                <h5 style="text-align:center;">Test Specs</h5>
+                <div class="list-group">
+                    <div ng-repeat="spec in spec_files track by $index">
+                        <input type="checkbox" ng-click="$ctrl.toggleSelectedSpec(spec)" id="testSpec-{{$index}}">
+                        <label class="list-group-item" for="testSpec-{{$index}}">{{spec}}</label>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
 
-    <div style="float:left;min-width:200px; width:45%;margin-left:10%;">
-        <!-- App Versions checkboxes -->
-        <h5 style="text-align:center">App Versions</h5>
-        <div class="list-group">
-            <div ng-repeat="version in availableAppVersions track by $index">
-                <input type="checkbox" ng-click="$ctrl.toggleSelectedAppVersion(version)" id="appVersion-{{$index}}">
-                <label class="list-group-item" for="appVersion-{{$index}}">{{version}}</label>
-            </div>
-        </div>
-    </div>
-
-    <div>
-        <!-- Test Specs checkboxes -->
-        <h5 style="text-align:center">Test Specs</h5>
-        <div class="list-group">
-            <div ng-repeat="spec in spec_files track by $index">
-                <input type="checkbox" ng-click="$ctrl.toggleSelectedSpec(spec)" id="testSpec-{{$index}}">
-                <label class="list-group-item" for="testSpec-{{$index}}">{{spec}}</label>
-            </div>
-        </div>
-    </div>
 
     <!--<div style="clear:both;"></div>-->
 
     <!--<label class="btn btn-default">-->
         <!--Choose Update file-->
     <!--</label>-->
-    <input type="file" name="file" onchange="angular.element(this).scope().setUploadFile(this.files)">
+    <input type="file" name="file" onchange="files = this.files">
     <p style="font-size:14px;">This file will be used to run the Software Update for each MNC before running the app against it.</p>
 </div>
 
