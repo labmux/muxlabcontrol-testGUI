@@ -31,13 +31,24 @@ app.controller('TestSuiteCtrl', function ($scope, $uibModalInstance, TestServerA
     });
 
     /**
-     * Get test spec files
+     * Get spec files
      */
-    TestServerAPIService.getTestSpecs().then(function (resp) {
+    TestServerAPIService.getSpecs().then(function (resp) {
         //remove first two options (., ..)
         $scope.spec_files = resp.data.slice(2);
+
+        for(let i = 0; i < $scope.spec_files.length; i++) {
+            $scope.spec_files[i] = $scope.spec_files[i]
+            // remove -spec.js
+                .replace(/(-spec.js|.js)/, '')
+            // put space
+                .replace(/([A-Z])/g, ' $1')
+            // uppercase the first character
+                .replace(/^./, function(str){ return str.toUpperCase(); })
+        }
+
     }).catch(function (e) {
-        console.log("Failed to get test spec files");
+        console.log("Failed to get spec files");
         console.log(e);
         $scope.alert = [{type:'danger', msg: "Error occurred while getting spec files"}];
     });
