@@ -1,5 +1,6 @@
 app.controller('TestSuiteCtrl', function ($scope, $uibModalInstance, TestServerAPIService) {
     let $ctrl = this;
+    $scope.testsuite_name = '';
     $scope.selectedMncVersions = [];
     $scope.selectedAppVersions = [];
     $scope.selectedSpecs = [];
@@ -42,26 +43,38 @@ app.controller('TestSuiteCtrl', function ($scope, $uibModalInstance, TestServerA
     });
 
     $ctrl.createTestSuite = function () {
-        $scope.fd = new FormData();
-        $ctrl.setUploadFile();
+        if ($scope.testsuite_name == '') {
+            alert("Couldn't create Test Suite: Name is undefined");
+        }
+        else if ($scope.selectedMncVersions.length == 0) {
+            alert("Couldn't create Test Suite: Mnc Versions is undefined");
+        }
+        else if ($scope.selectedAppVersions.length == 0) {
+            alert("Couldn't create Test Suite: App Version is undefined");
+        }
+        else if ($scope.selectedSpecs.length == 0) {
+            alert("Couldn't create Test Suite: Test Spec is undefined");
+        }
+        else {
+            $scope.fd = new FormData();
+            $ctrl.setUploadFile();
 
-        var mncVersions = [];
-        for (var i = 0; i < $scope.selectedMncVersions.length; i++ ) {
-            mncVersions.push({
-                identifier: $scope.selectedMncVersions[i]
+            var mncVersions = [];
+            for (var i = 0; i < $scope.selectedMncVersions.length; i++ ) {
+                mncVersions.push({
+                    identifier: $scope.selectedMncVersions[i]
+                });
+            }
+
+            TestServerAPIService.createTestSuite($scope.testsuite_name, mncVersions, $scope.selectedAppVersions, $scope.fd, $scope.selectedSpecs).then(function (result) {
+
+            }).catch(function (e) {
+                console.log("Failed to create test suite" + $scope.testsuite_name + " " + $scope.selectedMncVersions + " " + $scope.selectedAppVersions);
+                console.log(e);
+                $scope.alert = [{type:'danger', msg: "Error occurred while creating test Suite"}];
             });
         }
-
-        TestServerAPIService.createTestSuite($scope.testsuite_name, mncVersions, $scope.selectedAppVersions, $scope.fd, $scope.selectedSpecs).then(function (result) {
-
-        }).catch(function (e) {
-            console.log("Failed to create test suite" + $scope.testsuite_name + " " + $scope.selectedMncVersions + " " + $scope.selectedAppVersions);
-            console.log(e);
-            $scope.alert = [{type:'danger', msg: "Error occurred while creating test Suite"}];
-        });
-
         $uibModalInstance.close();
-
     };
 
     $ctrl.cancel = function () {

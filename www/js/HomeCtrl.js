@@ -48,7 +48,7 @@ app.controller('HomeCtrl', function ($scope, $uibModal, TestServerAPIService, $i
             controller: 'TestSuiteCtrl',
             controllerAs: '$ctrl',
             animation: true,
-            size: 'lg'
+            size: 'md'
         });
 
         modalInstance.result.then(function (versions) {
