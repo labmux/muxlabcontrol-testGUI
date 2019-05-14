@@ -1,62 +1,9 @@
 <div class="modal-header">
-    <h3 class="modal-title">New Test Suite</h3>
+    <h3 class="modal-title">Which Device would you like to test?</h3>
 </div>
 
-<div class="modal-body">
-    <label for="name">Test Suite Name:</label>
-    <input type="text" ng-model="testsuite_name" id="name"><br>
-
-    <br />
-    <div class="">
-        <div>
-            <div style="float:left;min-width:200px;width:45%">
-                <!-- MNC Versions checkboxes -->
-                <h5 style="text-align:center">MNC Versions</h5>
-                <div class="list-group">
-                    <div ng-repeat="version in availableMncVersions track by $index" style="text-align: center">
-                        <input type="checkbox" ng-click="$ctrl.toggleSelectedMncVersion(version)" id="mncVersion-{{$index}}">
-                        <label class="list-group-item" for="mncVersion-{{$index}}">{{version}}</label>
-                    </div>
-                </div>
-            </div>
-
-
-            <div style="float:left;min-width:200px; width:45%;margin-left:10%;">
-                <!-- App Versions checkboxes -->
-                <h5 style="text-align:center">App Versions</h5>
-                <div class="list-group">
-                    <div ng-repeat="version in availableAppVersions track by $index" style="text-align: center">
-                        <input type="checkbox" ng-click="$ctrl.toggleSelectedAppVersion(version)" id="appVersion-{{$index}}">
-                        <label class="list-group-item" for="appVersion-{{$index}}">{{version}}</label>
-                    </div>
-                </div>
-            </div>
-
-            <div style="width: 50%; margin: auto">
-                <!-- Test Specs checkboxes -->
-                <h5 style="text-align:center;">Test Specs</h5>
-                <div class="list-group">
-                    <div ng-repeat="spec in spec_files track by $index" style="text-align: center">
-                        <input type="checkbox" ng-click="$ctrl.toggleSelectedSpec(spec)" id="testSpec-{{$index}}">
-                        <label class="list-group-item" for="testSpec-{{$index}}">{{spec}}</label>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="modal-body" style="margin: 30px">
+    <div ng-repeat="device in devicesList" style="text-align: center; margin: 10px" >
+        <button type="button" class="btn btn-primary" ng-click="$ctrl.openDevice(device)" style="width: 165px; height: 45px;">{{ device }}</button>
     </div>
-
-
-
-    <!--<div style="clear:both;"></div>-->
-
-    <!--<label class="btn btn-default">-->
-        <!--Choose Update file-->
-    <!--</label>-->
-    <input type="file" name="file" onchange="files = this.files">
-    <p style="font-size:14px;">This file will be used to run the Software Update for each MNC before running the app against it.</p>
-</div>
-
-<div class="modal-footer">
-    <button class="btn btn-primary" type="submit" ng-click="$ctrl.createTestSuite()">Build Test Suite</button>
-    <button class="btn btn-danger" type="button" ng-click="$ctrl.cancel()">Cancel</button>
 </div>

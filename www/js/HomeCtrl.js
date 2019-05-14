@@ -15,6 +15,7 @@ app.controller('HomeCtrl', function ($scope, $uibModal, TestServerAPIService, $i
 
         TestServerAPIService.getTestSuites().then(function (resp) {
             $scope.testsuites = resp.data;
+            console.log(resp.data);
         }).catch(function (e) {
             $scope.alert = [{type:'danger', msg: "Error occurred while getting test suite"}];
             console.log("Failed to get test suites");
@@ -44,11 +45,11 @@ app.controller('HomeCtrl', function ($scope, $uibModal, TestServerAPIService, $i
 
     $ctrl.createNewTestSuiteModal = function () {
         let modalInstance = $uibModal.open({
-            templateUrl: 'modals/newTestSuite.html',
+            templateUrl: '../modals/newTestSuite.html',
             controller: 'TestSuiteCtrl',
             controllerAs: '$ctrl',
             animation: true,
-            size: 'md'
+            size: 'sm'
         });
 
         modalInstance.result.then(function (versions) {

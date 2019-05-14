@@ -215,7 +215,7 @@ foreach ($test_run_data['specs'] as $key => $spec) {
     if ($key == count($test_run_data['specs']) - 1)
         $spec_string .= "'$protractor_spec_filepath/$spec'";
     else
-        $spec_string .= "'$protractor_spec_filepath/$spec',";
+        $spec_string .= "'$protractor_spec_filepath/$spec', ";
 }
 
 $protractor_configjs_content = <<<CONFIGJS

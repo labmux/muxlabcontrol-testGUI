@@ -101,6 +101,10 @@ class TestSuite {
             }
         }
 
+        //TODO Eliran was here
+
+        // put all variables inside params
+
         //at this point we have valid data, let's go ahead and create an entry in the DB for this test suite
         $test_suite_id = DB::query('INSERT INTO test_suite SET name = ?:[name,s], mnc_versions = ?:[mnc_versions,s], app_versions = ?:[app_versions,s], update_file = ?:[update_file,b], specs = ?:[specs,s]', array(
             'name' => $name,

@@ -126,8 +126,15 @@ angular.module('uiBootstrap').factory('TestServerAPIService', ['$q', '$http', fu
          * Returns a list of all the different test specs
          * @returns {HttpPromise}
          */
-        getTestSpecs: function () {
-            return $http.get(api_root + '/test-specs')
+        getMuxlabControlSpecs: function () {
+            return $http.get(api_root + '/muxlabcontrol-specs')
+        },
+
+        /**
+         * Returns a list of Test Devices
+         */
+        getDevices: function () {
+            return $http.get(api_root + '/devices');
         }
 
     };
