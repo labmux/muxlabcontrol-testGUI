@@ -80,11 +80,13 @@ app.controller('MuxlabControlCtrl', function ($scope, $uibModalInstance, TestSer
             TestServerAPIService.createTestSuite($scope.testsuite_name, mncVersions, $scope.selectedAppVersions, $scope.fd, $scope.selectedSpecs).then(function (result) {
 
             }).catch(function (e) {
-                console.log("Failed to create test suite" + $scope.testsuite_name + " " + $scope.selectedMncVersions + " " + $scope.selectedAppVersions);
+                console.log("Failed to create test suite " + $scope.testsuite_name + " " + $scope.selectedMncVersions + " " + $scope.selectedAppVersions);
                 console.log(e);
                 $scope.alert = [{type:'danger', msg: "Error occurred while creating test Suite"}];
             });
         }
+
+        // HomeCtrl.refreshPage()
         $uibModalInstance.close();
     };
 

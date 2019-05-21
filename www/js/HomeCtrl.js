@@ -1,21 +1,36 @@
 app.controller('HomeCtrl', function ($scope, $uibModal, TestServerAPIService, $interval) {
 
     var $ctrl = this;
+
     /**
      * Fetches version data for the table
      */
     $ctrl.refreshPage = function () {
         TestServerAPIService.getMNCVirtualMachines().then(function (resp) {
             $scope.mncs = resp.data;
+
         }).catch(function (e) {
             $scope.alert = [{type:'danger', msg: "Error occurred while fetching mnc virtual machine"}];
-            console.log("Failed to get mnc virtual machines");
-            console.log(e);
+            console.log("Failed to get mnc virtual machines: " + e);
         });
 
         TestServerAPIService.getTestSuites().then(function (resp) {
+
+            // parse json data
+            for (let i= 0; i < resp.data.length; i++) {
+                // parse params object
+                // resp.data[i].params = JSON.parse(resp.data[i].params);
+
+                // parsing object values is required
+                // resp.data[i].params.mnc_versions = JSON.parse(resp.data[i].params.mnc_versions);
+                // resp.data[i].params.app_versions = JSON.parse(resp.data[i].params.app_versions);
+                // resp.data[i].params.specs = JSON.parse(resp.data[i].params.specs);
+            }
             $scope.testsuites = resp.data;
-            console.log(resp.data);
+
+            console.log($scope.testsuites);
+
+
         }).catch(function (e) {
             $scope.alert = [{type:'danger', msg: "Error occurred while getting test suite"}];
             console.log("Failed to get test suites");
@@ -23,11 +38,12 @@ app.controller('HomeCtrl', function ($scope, $uibModal, TestServerAPIService, $i
         });
     };
 
+
     $ctrl.refreshPage();
 
     $interval(function () {
         $ctrl.refreshPage();
-    }, 1000);
+    }, 3000);
 
     $ctrl.createNewVirtualMncModal = function () {
         let modalInstance = $uibModal.open({
@@ -145,4 +161,8 @@ app.controller('HomeCtrl', function ($scope, $uibModal, TestServerAPIService, $i
             $scope.alert = [{type:'danger', msg: "Error occurred while stopping version virtual machine"}];
         })
     };
+
+    $ctrl.testsuiteTab = function (tab) {
+        $scope.testsuiteTab = tab;
+    }
 });

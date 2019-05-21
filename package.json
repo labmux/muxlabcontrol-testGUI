@@ -18,5 +18,9 @@
   "homepage": "https://bitbucket.org/eliranassaraf/muxlabcontrol_testgui#readme",
   "devDependencies": {
     "json": "^9.0.6"
+  },
+  "dependencies": {
+    "protractor-linkuisref-locator": "^1.1.2",
+    "protractor-uisref-locator": "^1.2.0"
   }
 }

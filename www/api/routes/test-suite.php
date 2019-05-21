@@ -1,7 +1,6 @@
 <?php
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
-use Slim\Http\UploadedFile;
 
 
 $app->get('/test-suites', function (Request $request, Response $response, $args) {
@@ -27,15 +26,22 @@ $app->post('/test-suites', function (Request $request, Response $response, $args
         $data['name'] = '';
     }
     if (empty($data['mnc_versions'])) {
-        $data['mnc_versions'] = '';
-    }
-    if (empty($data['app_versions'])) {
-        $data['app_versions'] = '';
-    }
-    if (empty($data['specs'])) {
-        $data['specs'] = '';
+        $data['mnc_versions'] = array();
+    } else {
+        $data['mnc_versions'] = json_decode($data['mnc_versions'], true);
     }
 
+    if (empty($data['app_versions'])) {
+        $data['app_versions'] = array();
+    } else {
+        $data['app_versions'] = json_decode($data['app_versions'], true);
+    }
+
+    if (empty($data['specs'])) {
+        $data['specs'] = array();
+    } else {
+        $data['specs'] = json_decode($data['specs'], true);
+    }
 
     $uploadedFile = '';
     $uploadedFiles = $request->getUploadedFiles();
@@ -52,6 +58,10 @@ $app->post('/test-suites', function (Request $request, Response $response, $args
     }
 
     $result = TestPlayground\TestSuite::createTestSuite($data['name'], $data['mnc_versions'], $data['app_versions'], $uploadedFile, $data['specs']);
+
+//    var_dump($result);
+//
+    $result = json_decode($result);
 
     if (!empty($result['status']) && $result['status'] === 'error') {
         $response = $response->withJson($result, 400);

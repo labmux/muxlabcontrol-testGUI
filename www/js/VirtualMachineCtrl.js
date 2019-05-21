@@ -49,6 +49,8 @@ app.controller('VirtualMachineCtrl', function ($scope, $uibModalInstance, TestSe
                 $scope.alert = [{type:'danger', msg: "Error occurred while creating virtual machine"}];
             });
         }
+
+        // HomeCtrl.refreshPage();
         $uibModalInstance.close();
     };
 

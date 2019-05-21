@@ -9,12 +9,18 @@ class TestSuite {
 
     public static function getTestSuites() {
         $suites = DB::query('SELECT * FROM test_suite', array());
+
+
         for ($i = 0; $i < sizeof($suites); $i++) {
+            // todo @Eliran was here
+            $suites[$i]['params'] = json_decode($suites[$i]['params']);
+
             $suites[$i]['mnc_versions'] = json_decode($suites[$i]['mnc_versions']);
             $suites[$i]['app_versions'] = json_decode($suites[$i]['app_versions']);
             $suites[$i]['test_suite_runs'] = DB::query('SELECT * FROM test_suite_run WHERE test_suite_id = ?:[suite_id,i]', array(
                 'suite_id' => $suites[$i]['id']
             ));
+
             foreach ($suites[$i]['test_suite_runs'] as &$run) {
                 $run['beautiful_report_link'] = false;
                 $test_run_path = '/test-runs/test-suite_' . $suites[$i]['id'] . '/test-run_' . $run['id'] . '/beautiful-report/report.html';
@@ -104,9 +110,16 @@ class TestSuite {
         //TODO Eliran was here
 
         // put all variables inside params
+        $params = [
+            "name" => $name,
+            "mnc_versions" => $mnc_versions,
+            "app_versions" => $app_versions,
+            "specs" => $specs
+        ];
 
         //at this point we have valid data, let's go ahead and create an entry in the DB for this test suite
-        $test_suite_id = DB::query('INSERT INTO test_suite SET name = ?:[name,s], mnc_versions = ?:[mnc_versions,s], app_versions = ?:[app_versions,s], update_file = ?:[update_file,b], specs = ?:[specs,s]', array(
+        $test_suite_id = DB::query('INSERT INTO test_suite SET params = ?:[params,s], name = ?:[name,s], mnc_versions = ?:[mnc_versions,s], app_versions = ?:[app_versions,s], specs = ?:[specs,s], update_file = ?:[update_file,b]', array(
+            'params' => json_encode($params),
             'name' => $name,
             'mnc_versions' => json_encode($mnc_versions),
             'app_versions' => json_encode($app_versions),

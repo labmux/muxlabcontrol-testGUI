@@ -208,7 +208,7 @@ $protractor_spec_filepath = '/var/www/html/tests/e2e';//where the protractor e2e
 
 shell_exec('sudo -u muxlab mkdir ' . $test_run_path . '/beautiful-report');
 
-// get a string of all the spec files
+// create a string containing the spec files
 $spec_string = '';
 foreach ($test_run_data['specs'] as $key => $spec) {
     //if its the last file, dont put a comma
