@@ -41,7 +41,7 @@ exports.config = {
             // 'login-spec.js',
             //
             // 'deviceMnc-spec.js',
-            // 'presentation.js'
+            // 'presentation-spec.js'
 
 
         ]

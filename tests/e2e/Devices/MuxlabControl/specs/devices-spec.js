@@ -15,7 +15,7 @@ var EC = protractor.ExpectedConditions;
 
 describe('Devices test', function () {
     beforeEach(function () {
-        browser.get("http://localhost:8100/");
+        browser.get(port);
     });
 
     // TODO problems with this it

@@ -6,7 +6,7 @@
     <label for="name">Test Suite Name:</label>
     <input type="text" ng-model="testsuite_name" id="name"><br>
 
-    <br />
+    <br/>
     <div class="">
         <div>
             <div style="float:left;min-width:200px;width:45%">
@@ -52,7 +52,18 @@
     <!--<label class="btn btn-default">-->
     <!--Choose Update file-->
     <!--</label>-->
-    <input type="file" name="file" onchange="files = this.files">
+    <!--onchange="files = this.files"-->
+    <!--<input type="file" name="file" file-model="files" multiple>-->
+    <!--<button ng-click="$ctrl.setUploadFile()">Upload</button>-->
+
+    <span>
+        <input type="file" name="file" ng-click="$ctrl.setUploadFile()" onchange="files = this.files">
+    </span>
+
+    <li ng-repeat="file in files">{{ file.name }}</li>
+
+
+    <!--<button ng-click="$ctrl.setUploadFile()">Upload</button>-->
     <p style="font-size:14px;">This file will be used to run the Software Update for each MNC before running the app against it.</p>
 </div>
 

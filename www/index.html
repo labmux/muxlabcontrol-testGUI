@@ -20,10 +20,10 @@
 
     <!-- JS files -->
     <script src="app.js"></script>
-    <script src="js/VirtualMachineCtrl.js"></script>
     <script src="js/HomeCtrl.js"></script>
-    <script src="js/TestSuiteCtrl.js"></script>
-    <script src="js/MuxlabControlCtrl.js"></script>
+    <script src="modals/NewVirtualMnc/VirtualMachineCtrl.js"></script>
+    <script src="modals/NewTestSuite/TestSuiteCtrl.js"></script>
+    <script src="modals/MuxlabControlTestSuite/MuxlabControlCtrl.js"></script>
 
     <style>
         /**
@@ -221,7 +221,6 @@
                                 <thead>
                                     <th>MNC Version</th>
                                     <th>App Version</th>
-                                    <th>Spec(s)</th>
                                     <th>Activity Message</th>
                                     <th>Status</th>
                                     <th>Date Created</th>
@@ -231,7 +230,6 @@
                                 <tr ng-repeat="testruns in testsuite.test_suite_runs">
                                     <td>{{ testruns.mnc_identifier }}</td>
                                     <td>{{ testruns.app_version }}</td>
-                                    <td>{{ testruns.specs }}</td>
                                     <td>{{ testruns.activity_message }}</td>
                                     <td>{{ testruns.status }}</td>
                                     <td>{{ testruns.date_created}}</td>

@@ -29,7 +29,7 @@ if (emptynz($data['test_run_id'])) {
 }
 
 \TestPlayground\DB::init();
-$test_run_data = \TestPlayground\DB::query('SELECT test_suite_run.*, test_suite.update_file FROM test_suite_run LEFT JOIN test_suite ON test_suite_run.test_suite_id = test_suite.id WHERE test_suite_run.id = ?:[id,i]', array(
+$test_run_data = \TestPlayground\DB::query('SELECT test_suite_run.*, test_suite.update_file, test_suite.specs FROM test_suite_run LEFT JOIN test_suite ON test_suite_run.test_suite_id = test_suite.id WHERE test_suite_run.id = ?:[id,i]', array(
 'id' => $data['test_run_id']
 ));
 $test_run_data = reset($test_run_data);
@@ -204,18 +204,17 @@ $testserver_path = '/var/www/html/tests/e2e/';
 
 //EDIT ariel:
 //create a config.js file specific to this test, instead of messing around with conf.js which is not easily made dynamic
-$protractor_spec_filepath = '/var/www/html/tests/e2e';//where the protractor e2e tests are
+$protractor_spec_filepath = '/var/www/html/tests/e2e/Devices/MuxlabControl/specs';//where the protractor e2e tests are
 
 shell_exec('sudo -u muxlab mkdir ' . $test_run_path . '/beautiful-report');
 
 // create a string containing the spec files
-$spec_string = '';
-foreach ($test_run_data['specs'] as $key => $spec) {
-    //if its the last file, dont put a comma
-    if ($key == count($test_run_data['specs']) - 1)
-        $spec_string .= "'$protractor_spec_filepath/$spec'";
-    else
-        $spec_string .= "'$protractor_spec_filepath/$spec', ";
+//$spec_string =  $test_run_data['specs'];
+
+$spec_string = "";
+$specs_array = json_decode($test_run_data['specs'], true);
+foreach ( $specs_array as $spec) {
+        $spec_string .= ", \n'$protractor_spec_filepath/$spec'";
 }
 
 $protractor_configjs_content = <<<CONFIGJS
@@ -234,7 +233,7 @@ exports.config = {
         password: 'admin',
         test_run_id: "{$data['test_run_id']}"
     },
-    files: [{pattern: '$protractor_spec_filepath/*.js', included: true}],
+    files: [{pattern: '*.js', included: true}],
     seleniumAddress: 'http://localhost:4444/wd/hub',
     capabilities: {browserName: 'chrome','chromeOptions': {
             'args': ['no-sandbox']
@@ -252,10 +251,11 @@ exports.config = {
     //Choose which spec file to read
     specs:
         [
+            '$protractor_spec_filepath/init-spec.js'
             $spec_string
-//          '$protractor_spec_filepath/login-spec.js',
+//          '$protractor_spec_filepath/login-spec.js'
 //          '$protractor_spec_filepath/deviceMnc-spec.js',
-//          '$protractor_spec_filepath/presentation.js',
+//          '$protractor_spec_filepath/presentation-spec.js',
 //          '$protractor_spec_filepath/settings-spec.js',
 //          '$protractor_spec_filepath/devices-spec.js',
 //            '$protractor_spec_filepath/locations-spec.js'

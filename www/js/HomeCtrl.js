@@ -16,18 +16,8 @@ app.controller('HomeCtrl', function ($scope, $uibModal, TestServerAPIService, $i
 
         TestServerAPIService.getTestSuites().then(function (resp) {
 
-            // parse json data
-            for (let i= 0; i < resp.data.length; i++) {
-                // parse params object
-                // resp.data[i].params = JSON.parse(resp.data[i].params);
-
-                // parsing object values is required
-                // resp.data[i].params.mnc_versions = JSON.parse(resp.data[i].params.mnc_versions);
-                // resp.data[i].params.app_versions = JSON.parse(resp.data[i].params.app_versions);
-                // resp.data[i].params.specs = JSON.parse(resp.data[i].params.specs);
-            }
             $scope.testsuites = resp.data;
-
+            // $scope.testsuites.params.specs = $ctrl.beautifySpecs($scope.testsuites.params.specs);
             console.log($scope.testsuites);
 
 
@@ -43,11 +33,11 @@ app.controller('HomeCtrl', function ($scope, $uibModal, TestServerAPIService, $i
 
     $interval(function () {
         $ctrl.refreshPage();
-    }, 3000);
+    }, 4000);
 
     $ctrl.createNewVirtualMncModal = function () {
         let modalInstance = $uibModal.open({
-            templateUrl: 'modals/newVirtualMnc.html',
+            templateUrl: '../modals/NewVirtualMnc/newVirtualMnc.html',
             controller: 'VirtualMachineCtrl',
             controllerAs: '$ctrl',
             animation: true,
@@ -61,7 +51,7 @@ app.controller('HomeCtrl', function ($scope, $uibModal, TestServerAPIService, $i
 
     $ctrl.createNewTestSuiteModal = function () {
         let modalInstance = $uibModal.open({
-            templateUrl: '../modals/newTestSuite.html',
+            templateUrl: '../modals/NewTestSuite/newTestSuite.html',
             controller: 'TestSuiteCtrl',
             controllerAs: '$ctrl',
             animation: true,

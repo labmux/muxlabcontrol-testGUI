@@ -8,6 +8,11 @@ $app->get('/test-suites', function (Request $request, Response $response, $args)
 
     $result = TestPlayground\TestSuite::getTestSuites();
 
+//    foreach ($result['specs'as &$spec) {
+//        $spec = preg_replace("/-spec.js/", "", $spec);
+//        $spec = ucfirst($spec);
+//    }
+
     if (!empty($result['status']) && $result['status'] === 'error') {
         $response = $response->withJson($result, 400);
     } else {
@@ -22,6 +27,7 @@ $app->post('/test-suites', function (Request $request, Response $response, $args
 
     $data = $request->getParsedBody();
 
+    var_dump($data);
     if (empty($data['name'])) {
         $data['name'] = '';
     }
@@ -41,6 +47,12 @@ $app->post('/test-suites', function (Request $request, Response $response, $args
         $data['specs'] = array();
     } else {
         $data['specs'] = json_decode($data['specs'], true);
+
+        // transform spec files to original state
+        for ($i = 0; $i < count($data['specs']); $i++) {
+            $data['specs'][$i] = $data['specs'][$i] . '-spec.js';
+            $data['specs'][$i] = lcfirst($data['specs'][$i]);
+        }
     }
 
     $uploadedFile = '';
@@ -59,9 +71,6 @@ $app->post('/test-suites', function (Request $request, Response $response, $args
 
     $result = TestPlayground\TestSuite::createTestSuite($data['name'], $data['mnc_versions'], $data['app_versions'], $uploadedFile, $data['specs']);
 
-//    var_dump($result);
-//
-    $result = json_decode($result);
 
     if (!empty($result['status']) && $result['status'] === 'error') {
         $response = $response->withJson($result, 400);

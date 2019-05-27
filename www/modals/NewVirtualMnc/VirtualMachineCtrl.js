@@ -16,7 +16,6 @@ app.controller('VirtualMachineCtrl', function ($scope, $uibModalInstance, TestSe
 
     //Get MNC Versions
     TestServerAPIService.getAvailableMNCVersions().then(function (versions) {
-        console.log("get available mnc versions: " + versions.data);
         $scope.mncVersions = versions.data;
     }).catch(function (e) {
         console.log('failed to get available mnc versions')

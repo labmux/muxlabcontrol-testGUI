@@ -14,9 +14,10 @@ class TestSuite {
         for ($i = 0; $i < sizeof($suites); $i++) {
             // todo @Eliran was here
             $suites[$i]['params'] = json_decode($suites[$i]['params']);
-
+            $suites[$i]['specs'] = json_decode($suites[$i]['specs']);
             $suites[$i]['mnc_versions'] = json_decode($suites[$i]['mnc_versions']);
             $suites[$i]['app_versions'] = json_decode($suites[$i]['app_versions']);
+
             $suites[$i]['test_suite_runs'] = DB::query('SELECT * FROM test_suite_run WHERE test_suite_id = ?:[suite_id,i]', array(
                 'suite_id' => $suites[$i]['id']
             ));
@@ -28,6 +29,12 @@ class TestSuite {
                     $run['beautiful_report_link'] = $test_run_path;
                 }
             }
+
+            // make specs user friendly
+//            foreach ($suites[$i]['params']['specs'] as &$spec) {
+//                $spec = preg_replace("/-spec.js/", "", $spec);
+//                $spec = ucfirst($spec);
+//            }
         }
 
         return (!empty($suites) ? $suites : array());
@@ -107,6 +114,13 @@ class TestSuite {
             }
         }
 
+        // make user friendly spec var for params
+        $params_specs = $specs;
+        for ($i = 0; $i < count($params_specs); $i++) {
+            $params_specs[$i] = preg_replace("/-spec.js/", "", $params_specs[$i]);
+            $params_specs[$i] = ucfirst($params_specs[$i]);
+        }
+
         //TODO Eliran was here
 
         // put all variables inside params
@@ -114,7 +128,7 @@ class TestSuite {
             "name" => $name,
             "mnc_versions" => $mnc_versions,
             "app_versions" => $app_versions,
-            "specs" => $specs
+            "specs" => $params_specs
         ];
 
         //at this point we have valid data, let's go ahead and create an entry in the DB for this test suite

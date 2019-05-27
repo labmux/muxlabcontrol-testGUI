@@ -20,7 +20,7 @@ app.controller('TestSuiteCtrl', function ($scope, $uibModalInstance, $uibModal, 
 
             // open new modal
             let modalInstance = $uibModal.open({
-                templateUrl: '../modals/muxlabControl.html',
+                templateUrl: '/modals/MuxlabControlTestSuite/muxlabControl.html',
                 controller: 'MuxlabControlCtrl',
                 controllerAs: '$ctrl',
                 animation: true,

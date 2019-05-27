@@ -9,6 +9,16 @@ $app->get('/muxlabcontrol-specs', function (Request $request, Response $response
     $dir = '/var/www/html/tests/e2e/Devices/MuxlabControl/specs/';
     $files = scandir($dir);
 
+    // remove first two useless files (., ..)
+    array_splice($files, 0, 2);
+    // removes default init spec
+    array_splice($files, array_search('init-spec.js', $files), 1);
+
+    foreach ($files as &$file) {
+        $file = preg_replace("/-spec.js/", "", $file);
+        $file = ucfirst($file);
+    }
+
     if (empty($files)) {
         $response = $response->withJson($files, 400);
     }
