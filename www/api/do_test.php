@@ -8,6 +8,7 @@ require __DIR__ . '/../../vendor/autoload.php';
 require 'utlis.php';
 require 'config.php';
 
+
 spl_autoload_register(function ($classname) {
     $classname = str_replace('\\', '/', $classname);
     require (__DIR__ . "/./" . $classname . ".php");
@@ -54,7 +55,9 @@ if (!empty($test_run_data['mnc_user_defined'])) {
     \TestPlayground\DB::query('UPDATE test_suite_run SET activity_message = "Creating MNC for test" WHERE id = ?:[id,i]', array(
         'id' => $data['test_run_id']
     ));
+
     $mnc_instance = \TestPlayground\MNC::createMNCInstance('System Initiated ' . $test_run_data['test_suite_id'] . '_' . $data['test_run_id'], $test_run_data['mnc_identifier'], true);
+
     if (!empty($mnc_instance['status']) && $mnc_instance['status'] == 'error') {
         \TestPlayground\DB::query('UPDATE test_suite_run SET activity_message = ?:[message,s], status = "failed" WHERE id = ?:[id,i]', array(
             'id' => $data['test_run_id'],
@@ -63,18 +66,26 @@ if (!empty($test_run_data['mnc_user_defined'])) {
 
         exit(0);
     }
+
     //run the update file here if applicable
     \TestPlayground\DB::query('UPDATE test_suite_run SET activity_message = "MNC Created" WHERE id = ?:[id,i]', array(
         'id' => $data['test_run_id']
     ));
 
+    var_dump($test_run_data['update_file']);
     if (!empty($test_run_data['update_file'])) {
+
+        \TestPlayground\DB::query('UPDATE test_suite_run SET activity_message = "Updating MNC" WHERE id = ?:[id,i]', array(
+            'id' => $data['test_run_id']
+        ));
+
+//        var_dump('We made it?');
 
         //TODO test the auto update sys as well
         $client = new \GuzzleHttp\Client(['cookies' => true]);
 
         //log in
-        $r = $client->request('POST', 'http://' . $mnc_instance['ip_address'] . '/version/', [
+        $r = $client->request('POST', 'http://' . $mnc_instance['ip_address'] . '/mnc/', [
             'form_params' => [
                 'p_cmd' => 'mainLogin',
                 'p_userName' => 'admin',
@@ -91,24 +102,39 @@ if (!empty($test_run_data['mnc_user_defined'])) {
             ]
         ]);
 
-//send over the update zip file
-        $response = $client->request('POST', 'http://' . $mnc_instance['ip_address'] . '/version/xSoftwareUpdateV202/xSoftwareUpdate.php', [
+//        echo '---------- Updte file path ---------';
+//        $file = PATH_TEST_RUNS . '/test-suite_' . $test_run_data['test_suite_id'] . '/update-file.zip';
+//        if (file_exists($file)) {
+//            echo 'FILE EXISTS';
+//        }
+//        if (is_readable($file)) {
+//            echo ' FILE READABLE ';
+//        }
+//
+//        var_dump();
+//        echo fopen(PATH_TEST_RUNS . '/test-suite_' . $test_run_data['test_suite_id'] . '/update-file.zip', 'r');
+//
+//        echo '---------- Updte file path ---------';
+
+        $response = $client->request('POST', 'http://' . $mnc_instance['ip_address'] . '/mnc/xSoftwareUpdateV202/xSoftwareUpdate.php', [
             'multipart' => [
                 [
                     'name'     => 'zip_file',
-                    'contents' => fopen(PATH_TEST_RUNS . '/test-suite_' . $test_run_data['test_suite_id'], 'r')
+                    'contents' => fopen(PATH_TEST_RUNS . '/test-suite_' . $test_run_data['test_suite_id'] . '/update-file.zip', 'r')
                 ]
-            ],
-            'headers' => [
-                'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
-                'Accept-Encoding' => 'gzip,deflate',
-                'Cache-Control' => 'max-age=0',
-                'Connection' => 'keep-alive',
-                //'Content-Type' => 'multipart/form-data',
-                'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebkit/537.36 (KHTML, Like Gecko) Chrome/70.0.3538/110 Safari/537.36'
             ]
+//            ,
+//            'headers' => [
+//                'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+//                'Accept-Encoding' => 'gzip,deflate',
+//                'Cache-Control' => 'max-age=0',
+//                'Connection' => 'keep-alive',
+//                'Content-Type' => 'multipart/form-data',
+//                'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebkit/537.36 (KHTML, Like Gecko) Chrome/70.0.3538/110 Safari/537.36'
+//            ]
         ]);
-        sleep(1);//while the version updates and reboots
+
+        sleep(60);//while the version updates and reboots
     }
 
     //TODO @ELIRAN in the web interface don't let the user specify an update file when it's a user defined MNC
@@ -254,7 +280,7 @@ exports.config = {
             '$protractor_spec_filepath/init-spec.js'
             $spec_string
 //          '$protractor_spec_filepath/login-spec.js'
-//          '$protractor_spec_filepath/deviceMnc-spec.js',
+//          '$protractor_spec_filepath/discoverDeviceMnc-spec.js',
 //          '$protractor_spec_filepath/presentation-spec.js',
 //          '$protractor_spec_filepath/settings-spec.js',
 //          '$protractor_spec_filepath/devices-spec.js',
@@ -300,7 +326,6 @@ try {
 
 }
 
-
 \TestPlayground\DB::query('UPDATE test_suite_run SET status = ?:[status,s], activity_message = "Complete" WHERE id = ?:[id,i]', array(
     'id' => $data['test_run_id'],
     'status' => $test_run_result
@@ -310,6 +335,7 @@ try {
 $all_test_runs = \TestPlayground\DB::query('SELECT * FROM test_suite_run WHERE status = "in_progress" AND test_suite_id = ?:[test_suite_id,i]', array(
     'test_suite_id' => $test_run_data['test_suite_id']
 ));
+
 if (sizeof($all_test_runs) === 0) {//test suite has all its child processes finished running
     \TestPlayground\DB::query('UPDATE test_suite SET status = "done" WHERE id = ?:[id,i]', array(
         'id' => $test_run_data['test_suite_id']

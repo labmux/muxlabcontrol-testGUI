@@ -77,6 +77,7 @@ class TestSuite {
             );
         }
 
+
         //validate the version's specified
         $existing_boxes = MNC::getMNCs();
         foreach ($mnc_versions as $mnc_version) {
@@ -121,8 +122,6 @@ class TestSuite {
             $params_specs[$i] = ucfirst($params_specs[$i]);
         }
 
-        //TODO Eliran was here
-
         // put all variables inside params
         $params = [
             "name" => $name,
@@ -144,15 +143,18 @@ class TestSuite {
         //Ok, now let's run these tests! and register each in DB
         if (!emptynz($test_suite_id)) {
 
+            //            $app->config('debug', true);
             //TODO handle the update file here and place it in test suite folder so that it gets deleted after (on user delete)
             if (!empty($uploaded_file)) {
-                if (!is_dir(PATH_TEST_RUNS . '/test-suite_' . $test_suite_id)) {
-                    shell_exec('sudo -u muxlab mkdir ' . PATH_TEST_RUNS . '/test-suite_' . $test_suite_id);
+                $uploadedFile_path = PATH_TEST_RUNS . '/test-suite_' . $test_suite_id ;
+
+                if (!is_dir($uploadedFile_path)) {
+                    shell_exec('sudo -u muxlab mkdir ' . $uploadedFile_path);
+                    shell_exec('sudo -u muxlab chmod 777 ' . $uploadedFile_path);
                 }
-                moveUploadedUpdateFile(PATH_TEST_RUNS . 'test-suite_' . $test_suite_id . '/update-file.zip', $uploaded_file);
+
+                moveUploadedUpdateFile($uploadedFile_path . '/update-file.zip', $uploaded_file);
             }
-
-
 
             //get list of ports used already for the app server (ionic serve)
             $existing_runs = DB::query('SELECT * FROM test_suite_run ', array());
@@ -186,8 +188,8 @@ class TestSuite {
                     $output = array();
                     exec("sudo -u muxlab nohup php /var/www/html/www/api/do_test.php \"test_run_id={$test_run_id}\" > /dev/null 2>&1 &", $output);
                     //TO DEBUG USE BELOW INSTEAD OF ABOVE
-                    //exec("sudo -u muxlab php /var/www/html/www/api/do_test.php \"test_run_id={$test_run_id}\"", $output);
-                    //var_dump($output);
+//                    exec("sudo -u muxlab php /var/www/html/www/api/do_test.php \"test_run_id={$test_run_id}\"", $output);
+//                    var_dump($output);
                 }
             }
 

@@ -27,7 +27,9 @@ $app->post('/test-suites', function (Request $request, Response $response, $args
 
     $data = $request->getParsedBody();
 
-    var_dump($data);
+//    var_dump('DATAAAAAAAAA');
+//    var_dump($data);
+
     if (empty($data['name'])) {
         $data['name'] = '';
     }
@@ -59,15 +61,19 @@ $app->post('/test-suites', function (Request $request, Response $response, $args
     $uploadedFiles = $request->getUploadedFiles();
 
     // handle single input with single file upload
-    if (!empty($uploadedFiles['update_file'])) {
-        $uploadedFile = $uploadedFiles['update_file'];
+    if (!empty($uploadedFiles['file'])) {
+        $uploadedFile = $uploadedFiles['file'];
         if ($uploadedFile->getError() !== UPLOAD_ERR_OK) {
+
             return $response->withJson(array(
                 'status' => 'error',
                 'message' => 'invalid update-file upload'
             ), 400);
         }
     }
+
+//    var_dump('FIIIIIIILLLEEEE');
+//    var_dump($uploadedFile);
 
     $result = TestPlayground\TestSuite::createTestSuite($data['name'], $data['mnc_versions'], $data['app_versions'], $uploadedFile, $data['specs']);
 

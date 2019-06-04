@@ -51,6 +51,7 @@ class MNC {
     }
 
     public static function createMNCInstance($name, $mnc_version, $system_initiated = false) {
+
         while (self::isMNCInstantiating()) {
             sleep(1);
         }

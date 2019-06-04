@@ -40,7 +40,7 @@ exports.config = {
 
             // 'login-spec.js',
             //
-            // 'deviceMnc-spec.js',
+            // 'discoverDeviceMnc-spec.js',
             // 'presentation-spec.js'
 
 

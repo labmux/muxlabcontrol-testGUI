@@ -56,10 +56,14 @@
     <!--<input type="file" name="file" file-model="files" multiple>-->
     <!--<button ng-click="$ctrl.setUploadFile()">Upload</button>-->
 
-    <span>
-        <input type="file" name="file" ng-click="$ctrl.setUploadFile()" onchange="files = this.files">
-    </span>
+    <!--<span>-->
+        <!--<input type="file" name="file" onchange="files = this.files">-->
+    <!--</span>-->
 
+    <div>
+        <input type="file" id="file">
+        <!--<button ng-click="$ctrl.setUploadFile()">Upload</button>-->
+    </div>
     <li ng-repeat="file in files">{{ file.name }}</li>
 
 

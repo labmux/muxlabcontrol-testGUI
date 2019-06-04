@@ -7,7 +7,6 @@ app.controller('MuxlabControlCtrl', function ($scope, $uibModalInstance, TestSer
 
     $scope.fd = new FormData();
 
-
     /**
      * Get available mnc versions
      */
@@ -43,6 +42,9 @@ app.controller('MuxlabControlCtrl', function ($scope, $uibModalInstance, TestSer
         $scope.alert = [{type:'danger', msg: "Error occurred while getting spec files"}];
     });
 
+    /**
+     * Create a test
+     */
     $ctrl.createTestSuite = function () {
         if ($scope.testsuite_name == '') {
             alert("Couldn't create Test Suite: Name is undefined");
@@ -57,9 +59,6 @@ app.controller('MuxlabControlCtrl', function ($scope, $uibModalInstance, TestSer
             alert("Couldn't create Test Suite: Test Spec is undefined");
         }
         else {
-            // $scope.fd = new FormData();
-            $ctrl.setUploadFile();
-
             // transform mncVersions for server
             var mncVersions = [];
             for (var i = 0; i < $scope.selectedMncVersions.length; i++ ) {
@@ -68,8 +67,23 @@ app.controller('MuxlabControlCtrl', function ($scope, $uibModalInstance, TestSer
                 });
             }
 
+            // get upload file if set
+            $ctrl.setUploadFile();
+
+            // convert all data for form data
+            $scope.selectedSpecs = JSON.stringify($scope.selectedSpecs);
+            mncVersions = JSON.stringify(mncVersions);
+            $scope.selectedAppVersions = JSON.stringify($scope.selectedAppVersions);
+            // $scope.testsuite_name = JSON.stringify($scope.testsuite_name);
+
+            // insert all information inside the form data
+            $scope.fd.append('name', $scope.testsuite_name);
+            $scope.fd.append('mnc_versions', mncVersions);
+            $scope.fd.append('app_versions', $scope.selectedAppVersions);
+            $scope.fd.append('specs', $scope.selectedSpecs);
+
             // console.log(specs);
-            TestServerAPIService.createTestSuite($scope.testsuite_name, mncVersions, $scope.selectedAppVersions, $scope.fd, $scope.selectedSpecs).then(function (result) {
+            TestServerAPIService.createTestSuite($scope.fd).then(function (result) {
 
             }).catch(function (e) {
                 console.log("Failed to create test suite " + $scope.testsuite_name + " " + $scope.selectedMncVersions + " " + $scope.selectedAppVersions);
@@ -115,63 +129,19 @@ app.controller('MuxlabControlCtrl', function ($scope, $uibModalInstance, TestSer
             $scope.selectedSpecs.splice(i, 1);
     };
 
-    $ctrl.setUploadFile = function (file) {
-        console.log('ye');
-        // console.log($scope.files);
-        // angular.forEach($scope.files,function(file) {
-        //     fd.append('file', file);
-        // });
-        // console.log(file);
-        //     console.log(file[0]);
-        //     console.log($scope.fd);
-        //     console.log($scope.fd.values());
-        //     for (var value of $scope.fd.entries()) {
-        //         console.log(value);
-        //     }
+    $ctrl.setUploadFile = function () {
 
-        if (angular.isDefined($scope.files)) {
-            consolee.log('wow');
-            $scope.fd.append("file", $scope.files[0]);
+        var file = document.querySelector('#file');
 
-            console.log(files);
-            console.log(files[0]);
-            console.log($scope.fd);
-            console.log($scope.fd.values());
-            for (var value of $scope.fd.entries()) {
-                console.log(value);
-            }
-        }
+        if (file !== null && file !== 'undefined' && file !== '')
+            $scope.fd.append("file", file.files[0]);
 
-        // var f = document.getElementById('file').files[0],
-        //     r = new FileReader();
-        //
-        // console.log(f);
-        //
-        // r.onloadend = function(e) {
-        //     var data = e.target.result;
-        //     console.log(data);
-        //     //send your binary data via $http or $resource or do anything else with it
-        // };
-        //
-        // r.readAsBinaryString(f);
+        // debugging
+        // console.log($scope.fd.entries());
+        // // console.log(file);
+        // for (var value of $scope.fd.entries()) {
+        //     console.log(value);
+        // }
     };
 
-});
-
-app.directive('myDirective', function () {
-    return {
-        restrict: 'A',
-        scope: true,
-        link: function (scope, element, attr) {
-
-            element.bind('change', function () {
-                var formData = new FormData();
-                formData.append('file', element[0].files[0]);
-
-                console.log('------------------');
-                console.log(formData);
-            });
-
-        }
-    };
 });

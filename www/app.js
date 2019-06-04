@@ -85,6 +85,7 @@ angular.module('uiBootstrap').factory('TestServerAPIService', ['$q', '$http', fu
          * Creates a new test suite. Specify an array of version numbers and app versions to test, as well as a name for your test suite
          * and optionally an update file which will be used to update the 811 before each test run. Remember to run getMNCVirtualMachines after this to update your
          * list of VMs
+         * @formData contains:
          * @param name
          * @param mncVersions
          * @param appVersions
@@ -92,21 +93,16 @@ angular.module('uiBootstrap').factory('TestServerAPIService', ['$q', '$http', fu
          * @param specs
          * @returns {HttpPromise}
          */
-        createTestSuite: function (name, mncVersions, appVersions, fd, specs) {
-            if (typeof fd === 'undefined') {
-                fd = {};
+        createTestSuite: function (formData) {
+            if (typeof formData === 'undefined') {
+                formData = {};
+            }
+            console.log('------------------------------------');
+            for (var value of formData.entries()) {
+                console.log(value);
             }
 
-            specs = JSON.stringify(specs);
-            mncVersions = JSON.stringify(mncVersions);
-            appVersions = JSON.stringify(appVersions);
-
-            fd.append('name', name);
-            fd.append('mnc_versions', mncVersions);
-            fd.append('app_versions', appVersions);
-            fd.append('specs', specs);
-
-            return $http.post(api_root + '/test-suites', fd, {
+            return $http.post(api_root + '/test-suites', formData, {
                 withCredentials: true,
                 headers: {'Content-Type': undefined },
                 transformRequest: angular.identity
