@@ -1,3 +1,6 @@
+# This project contains automated e2e protractor tests that I wrote for a company app. It also contains api calls to our server, that will create an image of the product that our app runs on, and run the tests against it on that platform. It will then fetch and display the data nicely.
+
+
 When first checking this project from Git, install composer, and run 
 ```composer install```
 
